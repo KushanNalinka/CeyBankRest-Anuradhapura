@@ -1,23 +1,20 @@
+# .github/workflows/deploy.yml
 name: Frontend CI/CD
 
 on:
   push:
-    branches: [ main ]          # change if your default branch is different
+    branches: [ main ]
   pull_request:
     branches: [ main ]
 
-# ───────────────────────────────────────────────────────────
-# Global env (one place to tweak versions / CF-ID)
-# ───────────────────────────────────────────────────────────
 env:
   NODE_VERSION: 20
-  CF_ID: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}  # may be empty
+  CF_ID: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}   # leave empty if not using CF
 
 jobs:
-# ───────────────────────────── build ────────────────────────
+# ─────────────────── build ───────────────────
   build:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v3
 
@@ -41,12 +38,11 @@ jobs:
           name: frontend-build
           path: build
 
-# ───────────────────────────── deploy ───────────────────────
+# ─────────────────── deploy ──────────────────
   deploy:
     needs: build
-    if: github.ref == 'refs/heads/main'          # only auto-deploy main
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/download-artifact@v4
         with:
@@ -56,18 +52,18 @@ jobs:
       - name: Sync build/ to S3
         uses: jakejarvis/s3-sync-action@v0.5.1
         with:
-          args:  --follow-symlinks --delete
+          args: --follow-symlinks --delete
         env:
           AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: ${{ secrets.AWS_REGION }}
           SOURCE_DIR: build
-          DEST_DIR: /
+          DEST_DIR: ""          # ← leave blank (= bucket root)
 
-      # ───── OPTIONAL CloudFront invalidation ─────
+      # Optional CloudFront cache-flush
       - name: Invalidate CloudFront
-        if: env.CF_ID != ''          # only runs when you set the secret
+        if: env.CF_ID != ''
         uses: chetan/invalidate-cloudfront-action@v2
         env:
           DISTRIBUTION: ${{ env.CF_ID }}
