@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { products, loadProducts } from '../../Store';
+import  { useState } from 'react';
+
+import { products } from '../../Store';
 import ProductCart from '../../components/store/ProductCart';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faTimes } from '@fortawesome/free-solid-svg-icons';

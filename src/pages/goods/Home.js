@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
+
 import { products } from '../../Store';
 import ProductCart from '../../components/goods/ProductRequestCard';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';

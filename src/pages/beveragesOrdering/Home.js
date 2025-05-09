@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import  { useState } from 'react';
+
 import { products } from '../../Beverages';
 import ProductCart from '../../components/beverages/ProductCart';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';

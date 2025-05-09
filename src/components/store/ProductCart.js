@@ -216,7 +216,7 @@ const ProductCart = ({ data }) => {
     image,
     quantity,
     itemCode,
-    meal,
+  
     slug,
     reOrderLevel,
   } = data;
