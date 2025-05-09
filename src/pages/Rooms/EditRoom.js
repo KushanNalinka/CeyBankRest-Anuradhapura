@@ -33,7 +33,7 @@ const API_URL = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
     if (isOpen) fetchTypes();
-  }, [isOpen]);
+  });
 
   async function handleUpdate() {
     setError('');
