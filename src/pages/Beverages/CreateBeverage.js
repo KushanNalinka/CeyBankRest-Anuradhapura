@@ -334,7 +334,7 @@ export default function CreateBeverage(props) {
     if (isOpen) openPopup();
     else closePopup();
     return () => closePopup();
-  }, [isOpen]);
+  });
 
   function toggleMeal(meal) {
     setAvailableForMeals(prev =>

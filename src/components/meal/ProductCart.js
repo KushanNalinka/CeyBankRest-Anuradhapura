@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useCart } from '../../context/CartContext'; // ✅ using Context API instead of Redux
 
 const ProductCart = (props) => {
-    const { id, name, price, image,  meal, slug } = props.data;
+    const { id, name, price, image,   slug } = props.data;
     //const mealText = Array.isArray(meal) ? meal.join(', ') : meal;
 
     const { addToCart, setStatusTab } = useCart(); // ✅ use context

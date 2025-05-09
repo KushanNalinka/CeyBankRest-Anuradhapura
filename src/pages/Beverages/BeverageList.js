@@ -277,7 +277,7 @@
 //     </div>
 //   );
 // }
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { FaPlus, FaEdit, FaTrash } from 'react-icons/fa';
 import CreateBeverage from './CreateBeverage';
@@ -317,7 +317,7 @@ export default function BeverageList() {
 
   useEffect(() => {
     fetchBevs();
-  }, []);
+  },);
 
   return (
     <div className="min-h-screen bg-gray-100 p-8">

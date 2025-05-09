@@ -259,7 +259,7 @@ const CartTab = () => {
   const { items, clearCart, updateItemQuantity } = useCart();
   const [roomNumber, setRoomNumber] = useState("");
   const [reservation, setReservation] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [ setLoading] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const [confirmed, setConfirmed] = useState(false);
   const { meal } = useParams();

@@ -880,7 +880,7 @@ import { Link, useLocation } from 'react-router';
 import ceylon from '../assets/images/cey.png';
 
 /* ─ Icons ─ */
-import { Grid, Calendar, UserCircle, Table, Plug, ChevronDown, MoreHorizontal } from 'lucide-react';
+import { Grid, Calendar, UserCircle, Plug, ChevronDown, MoreHorizontal } from 'lucide-react';
 import { FaHotel, FaStore } from 'react-icons/fa';
 import { MdManageAccounts, MdBedroomParent, MdApproval } from 'react-icons/md';
 import { FaKitchenSet } from 'react-icons/fa6';

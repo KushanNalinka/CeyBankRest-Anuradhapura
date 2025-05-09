@@ -5,7 +5,7 @@ import {
   FaAppleAlt,
   FaCarrot,
   FaIceCream,
-  FaHamburger,
+
   FaHotdog,
   FaFish,
   FaDrumstickBite

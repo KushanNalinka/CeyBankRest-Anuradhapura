@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import  { useState } from 'react';
+import { Link} from 'react-router-dom';
 import {
   FaPizzaSlice,
   FaAppleAlt,
   FaCarrot,
   FaIceCream,
-  FaHamburger,
   FaHotdog,
   FaFish,
   FaDrumstickBite

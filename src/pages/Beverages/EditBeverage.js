@@ -384,7 +384,7 @@ export default function EditBeverage(props) {
     if (isOpen) openPopup();
     else closePopup();
     return () => closePopup();
-  }, [isOpen]);
+  });
 
   function toggleMeal(meal) {
     setAvailableForMeals(prev =>
