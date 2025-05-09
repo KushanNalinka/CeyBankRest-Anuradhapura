@@ -248,7 +248,7 @@
 
 // export default CartTab;
 
-import React, { useState } from "react";
+import  { useState } from "react";
 import { useCart } from "../../context/CartContext";
 import { products } from "../../Beverages"; // beverage list
 import CartItem from "./CartItem";

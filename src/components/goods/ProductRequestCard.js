@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { useGoodRequest } from '../../context/GoodRequestContext';
 
 const ProductRequestCard = ({ data }) => {
@@ -8,8 +8,7 @@ const ProductRequestCard = ({ data }) => {
     image,
     quantity,
     itemCode,
-    meal,
-    slug,
+ 
     reOrderLevel,
   } = data;
 
