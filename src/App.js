@@ -35,6 +35,8 @@ import StoreRequisitionGrantItems from "./pages/storeRequisitionGranting/StoreRe
 import FinalStoreRequistion from "./pages/finalizedRequisitions/StoreRequisitionList";
 import FinalStoreRequisitionItems from "./pages/finalizedRequisitions/StoreRequisitionItems";
 import Reservations from "./pages/Hotel/Reservation";
+import SignIn from "./pages/auth/Login";
+import SignUp from "./pages/auth/Signup";
 
 export default function App() {
   return (
@@ -116,8 +118,8 @@ export default function App() {
           </Route>
 
           {/* Auth Layout */}
-          {/* <Route path="/" element={<SignIn />} />
-          <Route path="/signup" element={<SignUp />} /> */}
+           <Route path="/" element={<SignIn />} />
+          <Route path="/signup" element={<SignUp />} /> 
 
           {/* Fallback Route */}
           <Route path="*" element={<NotFound />} />
