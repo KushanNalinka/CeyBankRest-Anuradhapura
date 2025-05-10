@@ -206,7 +206,7 @@ export default function RoomList() {
           <div className="flex justify-between items-center mb-4">
             <h1 className="text-2xl font-semibold">Rooms</h1>
             <button
-              className="p-2 bg-green-500 text-white rounded-full hover:bg-green-600"
+              className="p-2 bg-yellow-300 text-white rounded-full hover:bg-yellow-600"
               onClick={() => setShowCreate(true)}
             >
               <FaPlus />

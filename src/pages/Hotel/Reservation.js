@@ -193,7 +193,7 @@ const ReservationTable = () => {
       try {
         setLoading(true);
         const { data } = await axios.get(
-          'http://localhost:8080/api/reservations/full-details'
+          'http://3.7.141.177:8080/api/reservations/full-details'
         );
         setReservations(data);
       } catch (err) {
