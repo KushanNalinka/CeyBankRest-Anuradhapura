@@ -84,10 +84,11 @@ const StoreRequisitionList = () => {
   const [requisitions, setRequisitions] = useState([]);
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
+  const API_URL = process.env.REACT_APP_API_URL;  // build-time constant
 
   useEffect(() => {
     axios
-      .get('http://localhost:8080/api/v1/store-requisitions/summaries')
+      .get(`${API_URL}/v1/store-requisitions/summaries`)
       .then((res) => setRequisitions(res.data))
       .catch(() => setMessage('Failed to load requisitions.'));
   }, []);

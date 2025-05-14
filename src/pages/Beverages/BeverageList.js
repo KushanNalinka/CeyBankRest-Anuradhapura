@@ -149,7 +149,7 @@ import { FaPlus, FaEdit, FaTrash } from 'react-icons/fa';
 import CreateBeverage from './CreateBeverage';
 import EditBeverage from './EditBeverage';
 
-const API_URL = process.env.REACT_APP_API_URL;  // build-time constant
+
 
 export default function BeverageList() {
   const [bevs, setBevs]       = useState([]);
@@ -157,7 +157,7 @@ export default function BeverageList() {
   const [message, setMessage] = useState('');
   const [showCreate, setShowCreate] = useState(false);
   const [editItem, setEditItem]     = useState(null);
-
+  const API_URL = process.env.REACT_APP_API_URL;  // build-time constant
   /* ────────────────── helpers ────────────────── */
   const fetchBevs = useCallback(async () => {
     setLoading(true);

@@ -10,6 +10,7 @@ import GuestRegistrationNextForm from "./GuestRegistrationNextForm";
 
 // Constants
 const GUEST_TYPES = ["staff", "nonstaff", "pensioners", "clergy", "vip", "foreigners", "others"];
+const API_URL = process.env.REACT_APP_API_URL;  // build-time constant
 //const PAGE_SIZE = 10;
 
 const GuestRegistration = () => {
@@ -43,7 +44,7 @@ const GuestRegistration = () => {
   useEffect(() => {
     const loadRoomTypes = async () => {
       try {
-        const res = await fetch("http://localhost:8080/api/room-types");
+        const res = await fetch(`${API_URL}/room-types`);
         const data = await res.json();
         setRoomTypes(data);
         if (data.length > 0) setRoomTypeId(data[0].roomTypeId);
@@ -63,7 +64,7 @@ const GuestRegistration = () => {
       try {
         const startISO = formatISO(inDate, { representation: "date" });
         const res = await fetch(
-          `http://localhost:8080/api/rooms/available-on-date-by-type?date=${startISO}&roomTypeId=${roomTypeId}`
+          `${API_URL}/rooms/available-on-date-by-type?date=${startISO}&roomTypeId=${roomTypeId}`
         );
         const apiRooms = await res.json();
         const convertedRooms = apiRooms.map((room, idx) => ({

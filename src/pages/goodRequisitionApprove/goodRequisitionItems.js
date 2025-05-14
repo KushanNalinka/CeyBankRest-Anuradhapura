@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, useNavigate,Link } from 'react-router-dom';
 import axios from 'axios';
 
 export default function StoreRequisitionItems() {
@@ -11,10 +11,12 @@ export default function StoreRequisitionItems() {
   const [selectedItem, setSelectedItem] = useState(null);
   const [approveQty, setApproveQty] = useState(0);
   const [successMsg, setSuccessMsg] = useState('');
+    const navigate = useNavigate();
+const API_URL = process.env.REACT_APP_API_URL;  // build-time constant
 
   const fetchItems = () => {
     axios
-      .get(`http://localhost:8080/api/v1/store-requisitions/${id}/items`)
+      .get(`${API_URL}/v1/good-requisitions/${id}/items`)
       .then((res) => setItems(res.data))
       .catch(() => setMessage('Failed to load requisition items.'));
   };
@@ -32,7 +34,7 @@ export default function StoreRequisitionItems() {
 
   const handleSubmitApproval = () => {
     axios
-      .put('http://localhost:8080/api/v1/store-requisitions/approve-item', {
+      .put(`${API_URL}/v1/good-requisitions/approve-item`, {
         itemId: selectedItem?.id,
         approvedQuantity: approveQty,
       })
@@ -46,17 +48,20 @@ export default function StoreRequisitionItems() {
 
   return (
     <div className="p-6 relative">
-      <h2 className="text-2xl font-bold mb-4">Items for Requisition ID: {id}</h2>
-      <Link to="/" className="text-blue-600 underline mb-4 inline-block">
-        ← Back to List
-      </Link>
+      <h2 className="text-2xl font-bold mb-4">Items for Good Requisition ID: {id}</h2>
+      <button
+        onClick={() => navigate(-1)}
+        className="bg-blue-600 text-white px-4 py-2 rounded-md mb-4 hover:bg-blue-700 transition-colors"
+      >
+        ← Back to Previous Page
+      </button>
       {message && <p className="text-red-600">{message}</p>}
       {successMsg && <p className="text-green-600 mb-2">{successMsg}</p>}
 
       <table className="table-auto w-full border shadow-md rounded-lg mt-2">
         <thead>
           <tr className="bg-gray-100">
-            <th className="p-2 border">Inventory Item Id</th>
+            <th className="p-2 border">Item Id</th>
             <th className="p-2 border">Item Code</th>
             <th className="p-2 border">Name</th>
             <th className="p-2 border">Unit</th>

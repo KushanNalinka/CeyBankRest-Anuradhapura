@@ -206,6 +206,7 @@ import { products } from '../../Store';
 import GoodRequestItem from './GoodRequestItem';
 
 const GoodRequestTab = () => {
+  const API_URL = process.env.REACT_APP_API_URL;  // build-time constant
   const { requestItems, clearRequests, updateRequestQuantity } = useGoodRequest();
   const [showModal, setShowModal] = useState(false);
   const [modalConfirmed, setModalConfirmed] = useState(false);

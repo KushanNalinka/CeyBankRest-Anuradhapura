@@ -187,13 +187,13 @@ const ReservationTable = () => {
   const [expanded, setExpanded] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-
+const API_URL = process.env.REACT_APP_API_URL;  // build-time constant
   useEffect(() => {
     (async () => {
       try {
         setLoading(true);
         const { data } = await axios.get(
-          'http://3.7.141.177:8080/api/reservations/full-details'
+          `${API_URL}/reservations/full-details`
         );
         setReservations(data);
       } catch (err) {

@@ -1033,6 +1033,7 @@ import { products } from '../../Store';
 import CartItem from './CartItem';
 
 const CartTab = () => {
+  const API_URL = process.env.REACT_APP_API_URL;  // build-time constant
   const { storeItems, clearStore, updateStoreQuantity } = useStore();
 
   /* ---------------------------------------------------

@@ -81,12 +81,13 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const StoreRequisitionList = () => {
+  const API_URL = process.env.REACT_APP_API_URL;   // one constant
   const [requisitions, setRequisitions] = useState([]);
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch('http://localhost:8080/api/v1/store-requisitions/summaries')
+    fetch(`${API_URL}v1/store-requisitions/summaries`)
       .then((res) => res.json())
       .then(setRequisitions)
       .catch(() => setMessage('Failed to load requisitions.'));

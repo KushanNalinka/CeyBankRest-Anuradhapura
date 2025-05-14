@@ -485,6 +485,7 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 
 const CartTab = () => {
+  const API_URL = process.env.REACT_APP_API_URL;  // build-time constant
   const { items, clearCart, updateItemQuantity } = useCart();
   const [roomNumber, setRoomNumber] = useState("");
   const [reservation, setReservation] = useState(null);
@@ -508,7 +509,7 @@ const CartTab = () => {
     if (!roomNumber.trim()) return;
     try {
       const response = await axios.get(
-        `http://localhost:8080/api/reservations/active?roomNo=${roomNumber}&date=${formattedDate}`
+        `${API_URL}/reservations/active?roomNo=${roomNumber}&date=${formattedDate}`
       );
       setReservation(response.data);
       setShowPopup(true);

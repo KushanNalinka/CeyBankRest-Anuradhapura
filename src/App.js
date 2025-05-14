@@ -28,8 +28,8 @@ import FoodList from "./pages/Foods/FoodList";
 import BeverageList from "./pages/Beverages/BeverageList";
 import BeverageLayout from "./components/beverages/Layout";
 import BeverageHome from "./pages/beveragesOrdering/Home";
-import StoreRequistionList from "./pages/storeRequisitionManagement/StoreRequisitionList";
-import StoreRequisitionItems from "./pages/storeRequisitionManagement/StoreRequisitionItems";
+import StoreRequistionList from "./pages/storeRequisitionApprove/StoreRequisitionList";
+import StoreRequisitionItems from "./pages/storeRequisitionApprove/StoreRequisitionItems";
 import StoreRequistionGrantList from "./pages/storeRequisitionGranting/StoreRequisitionList";
 import StoreRequisitionGrantItems from "./pages/storeRequisitionGranting/StoreRequisitionItems";
 import FinalStoreRequistion from "./pages/finalizedRequisitions/StoreRequisitionList";
@@ -37,6 +37,12 @@ import FinalStoreRequisitionItems from "./pages/finalizedRequisitions/StoreRequi
 import Reservations from "./pages/Hotel/Reservation";
 import SignIn from "./pages/auth/Login";
 import SignUp from "./pages/auth/Signup";
+import GoodRequistionList from "./pages/goodRequisitionApprove/goodRequisitionList";
+import GoodRequisitionItems from "./pages/goodRequisitionApprove/goodRequisitionItems";
+import GoodRequistionGrantList from "./pages/goodRequisitionGranting/goodRequisitionList";
+import GoodRequisitionGrantItems from "./pages/goodRequisitionGranting/goodRequisitionItems";
+import FinalGoodRequistion from "./pages/finalizedGoodRequisitions/GoodRequisitionList";
+import FinalGoodRequisitionItems from "./pages/finalizedGoodRequisitions/GoodRequisitionItems";
 
 
 
@@ -55,7 +61,7 @@ export default function App() {
 
         <Route path='/store' element={<Layoutn />}>
           <Route index element={<Homenn />} />
-         
+          {/* <Route path='/store/:slug' element={<Detail />} />  */}
         </Route>
 
         <Route path='/goods' element={<GoodLayout/>}>
@@ -88,13 +94,26 @@ export default function App() {
 
             <Route path="/foods" element={<FoodList/>} />
             <Route path="/beverages" element={<BeverageList/>} />
+
+
             <Route path="/storerequisitionapprove" element={<StoreRequistionList />} />
             <Route path="/requisition-items/:id" element={<StoreRequisitionItems />} />
+
             <Route path="/storerequisitionmgmt" element={<StoreRequistionGrantList />} />
             <Route path="/requisition/grant/:id" element={<StoreRequisitionGrantItems />} />
             
             <Route path="/viewstorerequisition" element={<FinalStoreRequistion />} />
             <Route path="/requisition-final/:id" element={<FinalStoreRequisitionItems />} />
+
+             <Route path="/goodrequisitionapprove" element={<GoodRequistionList />} />
+            <Route path="/good-requisition-items/:id" element={<GoodRequisitionItems />} />
+
+            <Route path="/goodrequisitionmgmt" element={<GoodRequistionGrantList />} />
+            <Route path="/goodrequisition/grant/:id" element={<GoodRequisitionGrantItems />} />
+            
+            <Route path="/viewgoodrequisition" element={<FinalGoodRequistion />} />
+            <Route path="/good-requisition-final/:id" element={<FinalGoodRequisitionItems />} />
+
             <Route path="/reservations" element={<Reservations />} />
 
 

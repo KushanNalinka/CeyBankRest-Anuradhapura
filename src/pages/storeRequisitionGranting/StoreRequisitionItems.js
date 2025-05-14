@@ -1,11 +1,11 @@
 
 import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, useNavigate} from 'react-router-dom';
 import axios from 'axios';
 
 /* ────────────────── constants */
 const PAGE_SIZE = 8;
-const API = 'http://localhost:8080/api/v1';
+
 
 /* ────────────────── helpers */
 const genRandomGrn = () =>
@@ -27,13 +27,14 @@ const normaliseGrnList = (data) => {
 
 /* ────────────────── component */
 const StoreRequisitionItems = () => {
+  const API= process.env.REACT_APP_API_URL;   // one constant
   const { id } = useParams();
-
+ 
   /* requisition items */
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState('');
-
+  const navigate = useNavigate();
   /* pagination */
   const [page, setPage] = useState(1);
   const pageItems = items.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
@@ -170,9 +171,12 @@ const StoreRequisitionItems = () => {
       {/* ───────── left panel */}
       <div className="flex-1">
         <h2 className="text-2xl font-bold mb-4">Items for Requisition {id}</h2>
-        <Link to="/" className="text-blue-600 underline mb-4 inline-block">
-          ← Back
-        </Link>
+         <button
+        onClick={() => navigate(-1)}
+        className="bg-blue-600 text-white px-4 py-2 rounded-md mb-4 hover:bg-blue-700 transition-colors"
+      >
+        ← Back to Previous Page
+      </button>
         {message && <p className="mb-4 text-sm text-green-700">{message}</p>}
 
         <table className="table-auto w-full border shadow rounded-lg">

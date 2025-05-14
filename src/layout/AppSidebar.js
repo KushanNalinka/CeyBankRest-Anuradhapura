@@ -894,7 +894,7 @@ import SidebarWidget from './SidebarWidget';
 /* Navigation arrays – UNCHANGED (just pasted)   */
 /* ───────────────────────────────────────────── */
 const navItems = [
-  { icon: <Grid />, name: 'Dashboard', subItems: [{ name: 'Ecommerce', path: '/', pro: false }] },
+  { icon: <Grid />, name: 'Dashboard', subItems: [{ name: 'Ecommerce', path: '/home', pro: false }] },
   {
     name: 'Hotel',
     icon: <FaHotel />,
@@ -939,7 +939,7 @@ const navItems = [
     icon: <MdApproval />,
     subItems: [
       { name: 'Store Requistion Approve', path: '/storerequisitionapprove', pro: false },
-      { name: 'Good Requistion Approve', path: '/goodrequistionapprove', pro: false },
+      { name: 'Good Requistion Approve', path: '/goodrequisitionapprove', pro: false },
     ],
   },
   {
@@ -947,7 +947,7 @@ const navItems = [
     icon: <MdManageAccounts />,
     subItems: [
       { name: 'Store Requistion Confirmation', path: '/storerequisitionmgmt', pro: false },
-      { name: 'Good Requistion Confirmation', path: '/goodrequistionmgmt', pro: false },
+      { name: 'Good Requistion Confirmation', path: 'goodrequisitionmgmt', pro: false },
     ],
   },
   { name: 'Kitchen', icon: <FaKitchenSet />, subItems: [{ name: 'Good Requistion', path: '/goods', pro: false }] },
@@ -964,7 +964,7 @@ const navItems = [
     icon: <MdManageAccounts />,
     subItems: [
       { name: 'Finalized Store Requistion', path: '/viewstorerequisition', pro: false },
-      { name: 'Finalized Good Requistion', path: '/viewgoodrequistion', pro: false },
+      { name: 'Finalized Good Requistion', path: '/viewgoodrequisition', pro: false },
     ],
   },
   { icon: <Calendar />, name: 'Calendar', path: '/calendar' },

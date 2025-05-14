@@ -19,6 +19,12 @@ const HeaderWithRequest = () => {
           <span className='text-2xl font-bold'>CeyBank Rest Anuradhapura Good Requisition</span>
         </h3>
       </div>
+      <div className="ml-auto flex items-center gap-6">
+        {sessionStorage.getItem('username') && (
+          <span className="text-sm text-white font-medium">
+            👤 {sessionStorage.getItem('username')}
+          </span>
+        )}
       <div
         className='w-10 h-10 bg-gray-100 rounded-full flex justify-center items-center relative cursor-pointer'
         onClick={() => setShowRequestTab(true)}
@@ -27,6 +33,7 @@ const HeaderWithRequest = () => {
         <span className='absolute top-2/3 right-1/2 bg-red-500 text-white text-sm w-5 h-5 rounded-full flex justify-center items-center'>
           {totalQuantity}
         </span>
+      </div>
       </div>
     </header>
   );
