@@ -141,7 +141,7 @@ const StoreRequisitionItems = () => {
         setLoading(false);
       }
     })();
-  }, [id]);
+  });
 
   if (loading) return <p className="p-6">Loading…</p>;
 
