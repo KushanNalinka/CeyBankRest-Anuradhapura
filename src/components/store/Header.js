@@ -50,7 +50,7 @@ const Header = () => {
       <div className='flex items-center'>
         <img src={logo} alt="Logo" className='w-12 h-12 mr-2' />
         <h3 className='text-lg font-semibold text-white'>
-          <span className='text-2xl font-bold'>CeyBank Rest Anuradhapura Store</span>
+          <span className='text-2xl font-bold'>CeyBank Rest Anuradhapura Store Requisition</span>
         </h3>
       </div>
       <div

@@ -38,6 +38,8 @@ import Reservations from "./pages/Hotel/Reservation";
 import SignIn from "./pages/auth/Login";
 import SignUp from "./pages/auth/Signup";
 
+
+
 export default function App() {
   return (
     <>
@@ -53,7 +55,7 @@ export default function App() {
 
         <Route path='/store' element={<Layoutn />}>
           <Route index element={<Homenn />} />
-          {/* <Route path='/cashier/meal/:meal/:slug' element={<Detail />} /> */}
+         
         </Route>
 
         <Route path='/goods' element={<GoodLayout/>}>
