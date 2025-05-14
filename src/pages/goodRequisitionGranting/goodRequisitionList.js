@@ -1,13 +1,13 @@
 
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+const API_URL = process.env.REACT_APP_API_URL;  // build-time constant
 
 const StoreRequisitionList = () => {
   const [requisitions, setRequisitions] = useState([]);
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
-  const API_URL = process.env.REACT_APP_API_URL;  // build-time constant
-
+  
   useEffect(() => {
     fetch(`${API_URL}/v1/good-requisitions/summaries`)
       .then((res) => res.json())

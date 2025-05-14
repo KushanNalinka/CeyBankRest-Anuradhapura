@@ -79,9 +79,10 @@
 // StoreRequisitionList.jsx
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+const API_URL = process.env.REACT_APP_API_URL;   // one constant
 
 const StoreRequisitionList = () => {
-  const API_URL = process.env.REACT_APP_API_URL;   // one constant
+  
   const [requisitions, setRequisitions] = useState([]);
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
