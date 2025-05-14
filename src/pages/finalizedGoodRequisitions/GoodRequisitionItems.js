@@ -76,14 +76,15 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate} from 'react-router-dom';
 import axios from 'axios';
+const API_URL = process.env.REACT_APP_API_URL;  // build-time constant
+
 
 const StoreRequisitionItems = () => {
   const { id } = useParams();
   const [items, setItems] = useState([]);
   const [message, setMessage] = useState('');
     const navigate = useNavigate();
-    const API_URL = process.env.REACT_APP_API_URL;  // build-time constant
-
+    
   useEffect(() => {
     axios
       .get(`${API_URL}/v1/good-requisitions/${id}/items`)

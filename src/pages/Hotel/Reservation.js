@@ -181,13 +181,13 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { FaChevronRight, FaChevronDown } from 'react-icons/fa';
-
+const API_URL = process.env.REACT_APP_API_URL;  // build-time constant
 const ReservationTable = () => {
   const [reservations, setReservations] = useState([]);
   const [expanded, setExpanded] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-const API_URL = process.env.REACT_APP_API_URL;  // build-time constant
+
   useEffect(() => {
     (async () => {
       try {

@@ -151,7 +151,7 @@ import axios from 'axios';
 import { FaPlus, FaEdit, FaTrash } from 'react-icons/fa';
 import CreateFood from './CreateFood';
 import EditFood from './EditFood';
-
+const API_URL = process.env.REACT_APP_API_URL;  // build-time constant
 
 
 export default function FoodList() {
@@ -160,7 +160,7 @@ export default function FoodList() {
   const [message, setMessage]       = useState('');
   const [showCreate, setShowCreate] = useState(false);
   const [editItem, setEditItem]     = useState(null);
-  const API_URL = process.env.REACT_APP_API_URL;  // build-time constant
+  
 
   /* ────────────────── fetch helper ────────────────── */
   const fetchFoods = useCallback(async () => {

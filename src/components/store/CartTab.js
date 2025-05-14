@@ -1087,7 +1087,7 @@ const CartTab = () => {
 
     try {
       const response = await fetch(
-        'http://localhost:8080/api/v1/store-requisitions/add',
+        `${API_URL}/v1/store-requisitions/add`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
