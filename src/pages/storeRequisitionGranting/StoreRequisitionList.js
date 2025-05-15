@@ -88,7 +88,7 @@ const StoreRequisitionList = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch(`${API_URL}v1/store-requisitions/summaries`)
+    fetch(`${API_URL}/v1/store-requisitions/summaries`)
       .then((res) => res.json())
       .then(setRequisitions)
       .catch(() => setMessage('Failed to load requisitions.'));

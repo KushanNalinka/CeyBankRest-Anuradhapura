@@ -53,7 +53,7 @@ const StoreRequisitionItems = () => {
   const [grns, setGrns] = useState([]);
   const loadGrns = async () => {
     try {
-      const res = await axios.get(`${API}/store-requisitions/grn/list/${id}`);
+      const res = await axios.get(`${API}/v1/store-requisitions/grn/list/${id}`);
       setGrns(normaliseGrnList(res.data));
     } catch {
       setGrns([]);
@@ -66,7 +66,7 @@ const StoreRequisitionItems = () => {
   const openViewer = async (grnNo) => {
     try {
       const res = await axios.get(
-        `${API}/store-requisitions/grn/items/${grnNo}`
+        `${API}/v1/store-requisitions/grn/items/${grnNo}`
       );
       setViewItems(res.data);
       setView(grnNo);
@@ -93,7 +93,7 @@ const StoreRequisitionItems = () => {
 
   const saveViewChanges = async () => {
     try {
-      await axios.put(`${API}/store-requisitions/grn/update-items`, {
+      await axios.put(`${API}/v1/store-requisitions/grn/update-items`, {
         grnNo: view,
         items: viewItems.map((i) => ({
           itemId: i.id,
@@ -132,7 +132,7 @@ const StoreRequisitionItems = () => {
     if (selected.length === 0) return setModalErr('Select at least one item.');
     if (!confirm) return setModalErr('Please confirm this GRN.');
     try {
-      await axios.post(`${API}/store-requisitions/grn/add-batch`, {
+      await axios.post(`${API}/v1/store-requisitions/grn/add-batch`, {
         grnNo: grnInput.trim(),
         receivedDate: recvDate,
         itemIds: selected.map((i) => i.id),
@@ -151,7 +151,7 @@ const StoreRequisitionItems = () => {
     (async () => {
       try {
         const res = await axios.get(
-          `${API}/store-requisitions/${id}/items`
+          `${API}/v1/store-requisitions/${id}/items`
         );
         setItems(res.data);
         await loadGrns();
