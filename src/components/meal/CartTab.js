@@ -630,7 +630,7 @@ import { useParams } from 'react-router-dom';
 
 const CartTab = () => {
   const API_URL = process.env.REACT_APP_API_URL;  // build-time constant
-  const { items, clearCart, updateItemQuantity } = useCart();
+  const { items, clearCart, changeQuantity } = useCart();
   const [roomNumber, setRoomNumber] = useState('');
   const [reservation, setReservation] = useState(null);
   const [showPopup, setShowPopup] = useState(false);
@@ -673,7 +673,7 @@ const CartTab = () => {
     };
 
     try {
-      await axios.post('http://localhost:8080/api/food-orders/place', payload);
+      await axios.post(`${API_URL}/food-orders/place`, payload);
       alert('Order placed successfully!');
       clearCart();
       setRoomNumber('');
@@ -687,7 +687,7 @@ const CartTab = () => {
   };
 
   const handleQuantityChange = (productId, newQuantity) => {
-    updateItemQuantity(productId, newQuantity);
+    changeQuantity(productId, newQuantity);
   };
 
   const handleEnterKey = (e) => {

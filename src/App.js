@@ -43,6 +43,7 @@ import GoodRequistionGrantList from "./pages/goodRequisitionGranting/goodRequisi
 import GoodRequisitionGrantItems from "./pages/goodRequisitionGranting/goodRequisitionItems";
 import FinalGoodRequistion from "./pages/finalizedGoodRequisitions/GoodRequisitionList";
 import FinalGoodRequisitionItems from "./pages/finalizedGoodRequisitions/GoodRequisitionItems";
+import BillsPage from "./pages/Hotel/BillsPage";
 
 
 
@@ -115,6 +116,7 @@ export default function App() {
             <Route path="/good-requisition-final/:id" element={<FinalGoodRequisitionItems />} />
 
             <Route path="/reservations" element={<Reservations />} />
+              <Route path="/bills/:reservationId" element={<BillsPage />} />
 
 
             {/* Hotel Management */}
