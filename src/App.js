@@ -46,6 +46,8 @@ import FinalGoodRequisitionItems from "./pages/finalizedGoodRequisitions/GoodReq
 import BillsPage from "./pages/Hotel/BillsPage";
 import FoodBillsTable from "./pages/bills/FoodBillsTable";
 import BeverageBillsTable from "./pages/bills/BeverageBillsTable";
+import RoomBillCard from "./pages/bills/RoomBillCard";
+
 
 
 
@@ -117,32 +119,18 @@ export default function App() {
             <Route path="/viewgoodrequisition" element={<FinalGoodRequistion />} />
             <Route path="/good-requisition-final/:id" element={<FinalGoodRequisitionItems />} />
 
+            {/* Reservations */}
+
             <Route path="/reservations" element={<Reservations />} />
               <Route path="/bills/:reservationId" element={<BillsPage />} />
 
+              {/* bills */}
+
               <Route path="/foodbills" element={<FoodBillsTable />} />
                <Route path="/beveragebills" element={<BeverageBillsTable />} />
+               <Route path="/roombills" element={<RoomBillCard />} />
 
 
-            {/* Hotel Management */}
-
-            {/* Forms */}
-            {/* <Route path="/form-elements" element={<FormElements />} /> */}
-
-            {/* Tables */}
-            {/* <Route path="/basic-tables" element={<BasicTables />} /> */}
-
-            {/* Ui Elements */}
-            {/* <Route path="/alerts" element={<Alerts />} />
-            <Route path="/avatars" element={<Avatars />} />
-            <Route path="/badge" element={<Badges />} />
-            <Route path="/buttons" element={<Buttons />} />
-            <Route path="/images" element={<Images />} />
-            <Route path="/videos" element={<Videos />} /> */}
-
-            {/* Charts */}
-            {/* <Route path="/line-chart" element={<LineChart />} />
-            <Route path="/bar-chart" element={<BarChart />} /> */}
           </Route>
 
           {/* Auth Layout */}

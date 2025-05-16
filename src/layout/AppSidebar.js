@@ -919,7 +919,7 @@ const navItems = [
     name: 'Bills',
     icon: <LiaMoneyBillSolid />,
     subItems: [
-      { name: 'Room Charges', path: '/', pro: false },
+      { name: 'Room Charges', path: '/roombills', pro: false },
       { name: 'Meals', path: '/foodbills', pro: false },
       { name: 'Beverages', path: '/beveragebills', pro: false },
       { name: 'Others', path: '/', pro: false },

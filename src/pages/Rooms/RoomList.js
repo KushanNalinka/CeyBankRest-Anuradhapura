@@ -14,7 +14,7 @@ export default function RoomList() {
   const [showCreate, setShowCreate] = useState(false);
   const [editRoom, setEditRoom]     = useState(null);
 
-    const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
   const roomsPerPage = 5;
 
   /* ────────────────── fetch helper ────────────────── */
@@ -50,7 +50,7 @@ export default function RoomList() {
 
    const indexOfLast = currentPage * roomsPerPage;
   const indexOfFirst = indexOfLast - roomsPerPage;
-  const currentRooms = rooms.slice(indexOfFirst, indexOfLast);
+ // const currentRooms = rooms.slice(indexOfFirst, indexOfLast);
   const totalPages = Math.ceil(rooms.length / roomsPerPage);
 
   /* ────────────────── UI ────────────────── */

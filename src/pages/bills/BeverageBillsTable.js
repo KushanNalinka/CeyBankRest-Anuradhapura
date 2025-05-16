@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
@@ -9,7 +10,7 @@ const BeverageBillsTable = () => {
   const [filters, setFilters] = useState({ beverageBillId: '', roomNo: '', mealType: '', date: '' });
   const [currentPage, setCurrentPage] = useState(1);
   const [expandedBillId, setExpandedBillId] = useState(null);
-  const billsPerPage = 5;
+  const billsPerPage = 3;
 
   useEffect(() => {
     (async () => {

@@ -318,7 +318,10 @@ const StoreRequisitionItems = () => {
                   <tr className="bg-gray-100 text-sm">
                     <th className="p-2 border">Code</th>
                     <th className="p-2 border">Name</th>
+                     <th className="p-2 border">Required</th>
+                   <th className="p-2 border">Approved</th>
                     <th className="p-2 border">Remove</th>
+                   
                   </tr>
                 </thead>
                 <tbody>
@@ -326,6 +329,9 @@ const StoreRequisitionItems = () => {
                     <tr key={`sel-${it.id}`} className="text-center">
                       <td className="p-2 border">{it.itemCode}</td>
                       <td className="p-2 border">{it.itemName}</td>
+                       <td className="p-2 border">{it.requiredQuantity}</td>
+                        <td className="p-2 border">{it.approvedQuantity}</td>
+
                       <td className="p-2 border">
                         <button
                           onClick={() => toggleSelect(it)}
@@ -397,6 +403,8 @@ const StoreRequisitionItems = () => {
                     <tr className="bg-gray-100 text-sm">
                       <th className="p-2 border">Code</th>
                       <th className="p-2 border">Name</th>
+                      <th className="p-2 border">Required</th>
+                      <th className="p-2 border">Approved</th>
                       <th className="p-2 border">Received Qty</th>
                       <th className="p-2 border">Rate</th>
                       <th className="p-2 border">Total</th>
@@ -411,6 +419,8 @@ const StoreRequisitionItems = () => {
                       >
                         <td className="p-2 border">{it.itemCode}</td>
                         <td className="p-2 border">{it.itemName}</td>
+                         <td className="p-2 border">{it.requiredQuantity}</td>
+                         <td className="p-2 border">{it.approvedQuantity}</td>
                         <td className="p-2 border">
                           <input
                             type="number"

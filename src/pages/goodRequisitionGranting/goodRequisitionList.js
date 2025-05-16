@@ -45,12 +45,7 @@ const StoreRequisitionList = () => {
               <td className="p-2 border">{req.date}</td>
               <td className="p-2 border">{req.status ?? 'Pending'}</td>
               <td className="p-2 border space-x-2">
-                <button
-                  onClick={() => handleEditStatus(req.id)}
-                  className="bg-yellow-400 px-3 py-1 rounded text-white hover:bg-yellow-500"
-                >
-                  Edit
-                </button>
+                
                 <button
                   onClick={() => handleViewItems(req.id)}
                   className="bg-blue-500 px-3 py-1 rounded text-white hover:bg-blue-600"
