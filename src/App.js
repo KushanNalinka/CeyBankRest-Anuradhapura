@@ -44,6 +44,8 @@ import GoodRequisitionGrantItems from "./pages/goodRequisitionGranting/goodRequi
 import FinalGoodRequistion from "./pages/finalizedGoodRequisitions/GoodRequisitionList";
 import FinalGoodRequisitionItems from "./pages/finalizedGoodRequisitions/GoodRequisitionItems";
 import BillsPage from "./pages/Hotel/BillsPage";
+import FoodBillsTable from "./pages/bills/FoodBillsTable";
+import BeverageBillsTable from "./pages/bills/BeverageBillsTable";
 
 
 
@@ -117,6 +119,9 @@ export default function App() {
 
             <Route path="/reservations" element={<Reservations />} />
               <Route path="/bills/:reservationId" element={<BillsPage />} />
+
+              <Route path="/foodbills" element={<FoodBillsTable />} />
+               <Route path="/beveragebills" element={<BeverageBillsTable />} />
 
 
             {/* Hotel Management */}

@@ -920,8 +920,8 @@ const navItems = [
     icon: <LiaMoneyBillSolid />,
     subItems: [
       { name: 'Room Charges', path: '/', pro: false },
-      { name: 'Meals', path: '/', pro: false },
-      { name: 'Beverages', path: '/', pro: false },
+      { name: 'Meals', path: '/foodbills', pro: false },
+      { name: 'Beverages', path: '/beveragebills', pro: false },
       { name: 'Others', path: '/', pro: false },
       { name: 'Total Bills', path: '/', pro: false },
     ],
