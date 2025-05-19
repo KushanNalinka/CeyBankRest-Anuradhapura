@@ -52,8 +52,8 @@ export default function RoomTypeList() {
   }, [fetchAll]);                     // ESLint happy
 
   // Pagination logic
-  const indexOfLast = currentPage * itemsPerPage;
-  const indexOfFirst = indexOfLast - itemsPerPage;
+  //const indexOfLast = currentPage * itemsPerPage;
+ // const indexOfFirst = indexOfLast - itemsPerPage;
   //const currentItems = list.slice(indexOfFirst, indexOfLast);
   const totalPages = Math.ceil(list.length / itemsPerPage);
 
