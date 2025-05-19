@@ -15,9 +15,7 @@ const StoreRequisitionList = () => {
       .catch(() => setMessage('Failed to load requisitions.'));
   }, []);
 
-  const handleEditStatus = (id) => {
-    alert(`Edit status functionality for ID ${id} not implemented yet.`);
-  };
+ 
 
   const handleViewItems = (id) => {
     navigate(`/goodrequisition/grant/${id}`);

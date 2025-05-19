@@ -49,7 +49,7 @@ export default function RoomList() {
   }, [fetchRooms]);
 
    const indexOfLast = currentPage * roomsPerPage;
-  const indexOfFirst = indexOfLast - roomsPerPage;
+ // const indexOfFirst = indexOfLast - roomsPerPage;
  // const currentRooms = rooms.slice(indexOfFirst, indexOfLast);
   const totalPages = Math.ceil(rooms.length / roomsPerPage);
 

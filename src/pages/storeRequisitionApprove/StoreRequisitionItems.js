@@ -461,7 +461,7 @@ export default function StoreRequisitionItems() {
 
   useEffect(() => {
     fetchItems();
-  }, []);
+  });
 
   const handleSearch = (e) => {
     const value = e.target.value.toLowerCase();
