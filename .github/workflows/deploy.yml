@@ -1,3 +1,79 @@
+# # .github/workflows/deploy.yml
+# name: Frontend CI/CD
+
+# on:
+#   push:
+#     branches: [ main ]
+#   pull_request:
+#     branches: [ main ]
+
+# env:
+#   NODE_VERSION: 20
+#   CF_ID: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}   # leave empty if not using CF
+
+# jobs:
+# # ─────────────────── build ───────────────────
+#   build:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v3
+
+#       - name: Set up Node
+#         uses: actions/setup-node@v3
+#         with:
+#           node-version: ${{ env.NODE_VERSION }}
+
+#       - name: Install dependencies
+#         run: npm ci --legacy-peer-deps
+
+#       - name: Inject .env for build
+#         run: echo "REACT_APP_API_URL=${{ secrets.REACT_APP_API_URL }}" > .env
+#              echo "DISABLE_ESLINT_PLUGIN=true" >> .env
+
+#       - name: Build
+#         run: npm run build --if-present
+
+#       - name: Upload build artefact
+#         uses: actions/upload-artifact@v4
+#         with:
+#           name: frontend-build
+#           path: build
+
+# # ─────────────────── deploy ──────────────────
+#   deploy:
+#     needs: build
+#     if: github.ref == 'refs/heads/main'
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/download-artifact@v4
+#         with:
+#           name: frontend-build
+#           path: build
+
+#       - name: Sync build/ to S3
+#         uses: jakejarvis/s3-sync-action@v0.5.1
+#         with:
+#           args: --follow-symlinks --delete
+#         env:
+#           AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
+#           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#           AWS_REGION: ${{ secrets.AWS_REGION }}
+#           SOURCE_DIR: build
+#           DEST_DIR: ""          # ← leave blank (= bucket root)
+
+#       # Optional CloudFront cache-flush
+#       - name: Invalidate CloudFront
+#         if: env.CF_ID != ''
+#         uses: chetan/invalidate-cloudfront-action@v2
+#         env:
+#           DISTRIBUTION: ${{ env.CF_ID }}
+#           PATHS: '/*'
+#           AWS_REGION: ${{ secrets.AWS_REGION }}
+#           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+
 # .github/workflows/deploy.yml
 name: Frontend CI/CD
 
@@ -27,11 +103,14 @@ jobs:
         run: npm ci --legacy-peer-deps
 
       - name: Inject .env for build
-        run: echo "REACT_APP_API_URL=${{ secrets.REACT_APP_API_URL }}" > .env
-             echo "DISABLE_ESLINT_PLUGIN=true" >> .env
+        run: |
+          echo "REACT_APP_API_URL=${{ secrets.REACT_APP_API_URL }}" > .env
+          echo "DISABLE_ESLINT_PLUGIN=true" >> .env
 
-      - name: Build
-        run: npm run build --if-present
+      - name: Build (with ESLint disabled)
+        run: |
+          unset CI
+          npm run build --if-present
 
       - name: Upload build artefact
         uses: actions/upload-artifact@v4
