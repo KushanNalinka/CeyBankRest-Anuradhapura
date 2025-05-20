@@ -1017,7 +1017,16 @@ const GuestRegistration = () => {
     return range;
   };
 
-  const fetchRoomDetails = async (rooms) => {
+  const filterRooms = (rooms, details, roomType) => {
+    if (!roomType) return rooms;
+    return rooms.filter(room =>
+      details[room.roomNo] &&
+      details[room.roomNo].roomType &&
+      details[room.roomNo].roomType.name === roomType
+    );
+  };
+
+  const fetchRoomDetails = useCallback(async (rooms) => {
     setIsLoadingDetails(true);
     const details = {};
     try {
@@ -1049,7 +1058,7 @@ const GuestRegistration = () => {
     } finally {
       setIsLoadingDetails(false);
     }
-  };
+  }, [selectedRoomType]);
 
   const fetchRoomData = useCallback(async () => {
     if (!inDate || !outDate) return;
@@ -1078,21 +1087,12 @@ const GuestRegistration = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [inDate, outDate, selectedRoomType]);
+  }, [inDate, outDate, selectedRoomType, fetchRoomDetails]);
 
   useEffect(() => {
     if (!isPopupOpen) return;
     fetchRoomData();
   }, [isPopupOpen, fetchRoomData]);
-
-  const filterRooms = (rooms, details, roomType) => {
-    if (!roomType) return rooms;
-    return rooms.filter(room =>
-      details[room.roomNo] &&
-      details[room.roomNo].roomType &&
-      details[room.roomNo].roomType.name === roomType
-    );
-  };
 
   const handleRoomTypeChange = (e) => {
     const typeId = Number(e.target.value);
@@ -1118,7 +1118,6 @@ const GuestRegistration = () => {
       />
     </div>
   );
-
   return (
     <>
       {/* STEP 1 */}
