@@ -257,7 +257,7 @@ export default function GoodRequisitionItems() {
         value={searchTerm}
         onChange={handleSearch}
         placeholder="Search items by any field..."
-        className="mt-4 mb-2 px-4 py-2 border rounded w-full max-w-md"
+        className="mt-4 mb-2 px-4 ml-4 py-2 border rounded w-full max-w-md"
       />
 
       {message && <p className="text-red-600">{message}</p>}
