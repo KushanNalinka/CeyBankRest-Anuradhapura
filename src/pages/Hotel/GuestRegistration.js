@@ -1297,7 +1297,7 @@
 
 // export default GuestRegistration;
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import DatePicker from "react-datepicker";
 import { addDays, differenceInCalendarDays, formatISO } from "date-fns";
 import "react-datepicker/dist/react-datepicker.css";
@@ -1375,55 +1375,6 @@ const GuestRegistration = () => {
     return range;
   };
 
-  // Fetch room availability data
-  const fetchRoomData = async () => {
-    if (!inDate || !outDate) {
-      return;
-    }
-    
-    if (inDate >= outDate) {
-      setError("Check-out date must be after check-in date.");
-      return;
-    }
-
-    setIsLoading(true);
-    setError(null);
-    
-    const inDateStr = formatISO(inDate, { representation: 'date' });
-    const outDateStr = formatISO(outDate, { representation: 'date' });
-    
-    try {
-      // Fetch data from the backend API
-      const response = await fetch(`${API_URL}/rooms/available-on-range?inDate=${inDateStr}&outDate=${outDateStr}`);
-      
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      
-      const data = await response.json();
-      setRoomData(data);
-      
-      // This will create a range from check-in date to the day before check-out date
-      const range = buildDateRange(inDate, outDate);
-      setDateRange(range);
-      
-      // Fetch additional details for each room
-      await fetchRoomDetails(data);
-    } catch (err) {
-      console.error('Error fetching room availability:', err);
-      setError('Failed to fetch room data. Please try again later.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // Fetch rooms when popup opens
-  useEffect(() => {
-    if (!isPopupOpen) return;
-    
-    fetchRoomData();
-  }, [isPopupOpen, fetchRoomData]);
-
   // Fetch room details for each room
   const fetchRoomDetails = async (rooms) => {
     setIsLoadingDetails(true);
@@ -1478,6 +1429,55 @@ const GuestRegistration = () => {
              details[room.roomNo].roomType.name === roomType;
     });
   };
+
+  // Fetch room availability data - wrapped in useCallback
+  const fetchRoomData = useCallback(async () => {
+    if (!inDate || !outDate) {
+      return;
+    }
+    
+    if (inDate >= outDate) {
+      setError("Check-out date must be after check-in date.");
+      return;
+    }
+
+    setIsLoading(true);
+    setError(null);
+    
+    const inDateStr = formatISO(inDate, { representation: 'date' });
+    const outDateStr = formatISO(outDate, { representation: 'date' });
+    
+    try {
+      // Fetch data from the backend API
+      const response = await fetch(`${API_URL}/rooms/available-on-range?inDate=${inDateStr}&outDate=${outDateStr}`);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      setRoomData(data);
+      
+      // This will create a range from check-in date to the day before check-out date
+      const range = buildDateRange(inDate, outDate);
+      setDateRange(range);
+      
+      // Fetch additional details for each room
+      await fetchRoomDetails(data);
+    } catch (err) {
+      console.error('Error fetching room availability:', err);
+      setError('Failed to fetch room data. Please try again later.');
+    } finally {
+      setIsLoading(false);
+    }
+  }, [inDate, outDate]); // Add only the dependencies that are used inside the function
+
+  // Fetch rooms when popup opens
+  useEffect(() => {
+    if (!isPopupOpen) return;
+    
+    fetchRoomData();
+  }, [isPopupOpen, fetchRoomData]);
 
   // Handle room type selection change
   const handleRoomTypeChange = (e) => {
