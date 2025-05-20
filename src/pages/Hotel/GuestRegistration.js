@@ -751,7 +751,7 @@
 
 
 
-import { useEffect, useState, useCallback} from "react";
+import { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import { addDays, differenceInCalendarDays, formatISO } from "date-fns";
 import "react-datepicker/dist/react-datepicker.css";
@@ -768,218 +768,26 @@ const GUEST_TYPES = ["staff", "nonstaff", "pensioners", "clergy", "vip", "foreig
 const API_URL = process.env.REACT_APP_API_URL || "http://localhost:8080/api";
 
 const GuestRegistration = () => {
-  // const today = new Date();
-
-  
-  // // Guest info states
-  // const [guestType, setGuestType] = useState(GUEST_TYPES[0]);
-  // const [pif, setPif] = useState(""); // PIF / NIC / Passport
-  // const [roomTypeId, setRoomTypeId] = useState(null); // selected room type
-  // const [roomTypes, setRoomTypes] = useState([]); // dropdown room types
-
-  // // Date pickers
-  // const [inDate, setInDate] = useState(today);
-  // const [outDate, setOutDate] = useState(addDays(today, 1));
-
-  // // Room Chart Data
-  // const [roomData, setRoomData] = useState([]);
-  // const [roomDetails, setRoomDetails] = useState({});
-  // const [dateRange, setDateRange] = useState([]);
-  // const [isLoading, setIsLoading] = useState(false);
-  // const [isLoadingDetails, setIsLoadingDetails] = useState(false);
-  // const [error, setError] = useState(null);
-  // const [selectedRoomType, setSelectedRoomType] = useState('');
-
-  // const { isPopupOpen, openPopup, closePopup } = usePopup();
-
-  // const [selectedRooms, setSelectedRooms] = useState([]);
-  // const [step, setStep] = useState(1);
-
-  // const nights = Math.max(1, differenceInCalendarDays(outDate, inDate));
-
-  // // Fetch room types from API on first load
-  // useEffect(() => {
-  //   const loadRoomTypes = async () => {
-  //     try {
-  //       const res = await fetch(`${API_URL}/room-types`);
-  //       const data = await res.json();
-  //       setRoomTypes(data);
-  //       if (data.length > 0) {
-  //         setRoomTypeId(data[0].roomTypeId);
-  //         setSelectedRoomType(data[0].name);
-  //       }
-  //     } catch (e) {
-  //       console.error("Error fetching room types", e);
-  //       setError("Failed to fetch room types. Please try again later.");
-  //     }
-  //   };
-  //   loadRoomTypes();
-  // }, []);
-
-  // // Build date range
-  // const buildDateRange = (start, end) => {
-  //   const range = [];
-  //   let current = new Date(start);
-  //   const endDate = new Date(end);
-    
-  //   // Create a range that includes start date up to but not including end date
-  //   while (current < endDate) {
-  //     range.push(new Date(current).toISOString().split('T')[0]);
-  //     current = new Date(current.setDate(current.getDate() + 1));
-  //   }
-  //   return range;
-  // };
-
-  // // Fetch rooms when popup opens
-  // useEffect(() => {
-  //   if (!isPopupOpen) return;
-    
-  //   fetchRoomData();
-  // }, [isPopupOpen]);
-
-  // // Fetch room availability data
-  // const fetchRoomData = async () => {
-  //   if (!inDate || !outDate) {
-  //     return;
-  //   }
-    
-  //   if (inDate >= outDate) {
-  //     setError("Check-out date must be after check-in date.");
-  //     return;
-  //   }
-
-  //   setIsLoading(true);
-  //   setError(null);
-    
-  //   const inDateStr = formatISO(inDate, { representation: 'date' });
-  //   const outDateStr = formatISO(outDate, { representation: 'date' });
-    
-  //   try {
-  //     // Fetch data from the backend API
-  //     const response = await fetch(`${API_URL}/rooms/available-on-range?inDate=${inDateStr}&outDate=${outDateStr}`);
-      
-  //     if (!response.ok) {
-  //       throw new Error(`HTTP error! Status: ${response.status}`);
-  //     }
-      
-  //     const data = await response.json();
-  //     setRoomData(data);
-      
-  //     // This will create a range from check-in date to the day before check-out date
-  //     const range = buildDateRange(inDate, outDate);
-  //     setDateRange(range);
-      
-  //     // Fetch additional details for each room
-  //     await fetchRoomDetails(data);
-  //   } catch (err) {
-  //     console.error('Error fetching room availability:', err);
-  //     setError('Failed to fetch room data. Please try again later.');
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
-
-  // // Fetch room details for each room
-  // const fetchRoomDetails = async (rooms) => {
-  //   setIsLoadingDetails(true);
-  //   const details = {};
-    
-  //   try {
-  //     // Create an array of promises for fetching room details
-  //     const promises = rooms.map(room => 
-  //       fetch(`${API_URL}/rooms/${room.roomNo}`)
-  //         .then(response => {
-  //           if (!response.ok) {
-  //             throw new Error(`HTTP error! Status: ${response.status}`);
-  //           }
-  //           return response.json();
-  //         })
-  //         .then(data => {
-  //           details[room.roomNo] = data;
-  //         })
-  //         .catch(err => {
-  //           console.error(`Error fetching details for room ${room.roomNo}:`, err);
-  //           // Set a placeholder for failed requests
-  //           details[room.roomNo] = { 
-  //             roomNo: room.roomNo, 
-  //             roomType: { name: 'Unknown', currentRate: 'N/A' },
-  //             status: 'unknown'
-  //           };
-  //         })
-  //     );
-      
-  //     // Wait for all promises to complete
-  //     await Promise.all(promises);
-  //     setRoomDetails(details);
-      
-  //     // Filter rooms based on room type if selected
-  //     filterRooms(rooms, details, selectedRoomType);
-  //   } catch (err) {
-  //     console.error('Error fetching room details:', err);
-  //   } finally {
-  //     setIsLoadingDetails(false);
-  //   }
-  // };
-
-  // // Filter rooms based on selected room type
-  // const filterRooms = (rooms, details, roomType) => {
-  //   if (!roomType) {
-  //     return rooms;
-  //   }
-    
-  //   return rooms.filter(room => {
-  //     return details[room.roomNo] && 
-  //            details[room.roomNo].roomType && 
-  //            details[room.roomNo].roomType.name === roomType;
-  //   });
-  // };
-
-  // // Handle room type selection change
-  // const handleRoomTypeChange = (e) => {
-  //   const typeId = Number(e.target.value);
-  //   setRoomTypeId(typeId);
-    
-  //   // Find the corresponding room type name
-  //   const roomType = roomTypes.find(type => type.roomTypeId === typeId);
-  //   setSelectedRoomType(roomType ? roomType.name : '');
-  // };
-
-  // // Toggle room selection
-  // const toggleRoomSelection = (roomNo) => {
-  //   setSelectedRooms(prev =>
-  //     prev.includes(roomNo) ? prev.filter(r => r !== roomNo) : [...prev, roomNo]
-  //   );
-  // };
-
-  // const DatePickerInput = ({ icon, ...props }) => (
-  //   <div className="relative">
-  //     <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
-  //       {icon}
-  //     </span>
-  //     <DatePicker
-  //       {...props}
-  //       className="pl-10 w-full h-12 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
-  //     />
-  //   </div>
-  // );
-
   const today = new Date();
 
+  // Guest info states
   const [guestType, setGuestType] = useState(GUEST_TYPES[0]);
-  const [pif, setPif] = useState("");
-  const [roomTypeId, setRoomTypeId] = useState(null);
-  const [roomTypes, setRoomTypes] = useState([]);
+  const [pif, setPif] = useState(""); // PIF / NIC / Passport
+  const [roomTypeId, setRoomTypeId] = useState(null); // selected room type
+  const [roomTypes, setRoomTypes] = useState([]); // dropdown room types
 
+  // Date pickers
   const [inDate, setInDate] = useState(today);
   const [outDate, setOutDate] = useState(addDays(today, 1));
 
+  // Room Chart Data
   const [roomData, setRoomData] = useState([]);
   const [roomDetails, setRoomDetails] = useState({});
   const [dateRange, setDateRange] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingDetails, setIsLoadingDetails] = useState(false);
   const [error, setError] = useState(null);
-  const [selectedRoomType, setSelectedRoomType] = useState("");
+  const [selectedRoomType, setSelectedRoomType] = useState('');
 
   const { isPopupOpen, openPopup, closePopup } = usePopup();
 
@@ -988,6 +796,7 @@ const GuestRegistration = () => {
 
   const nights = Math.max(1, differenceInCalendarDays(outDate, inDate));
 
+  // Fetch room types from API on first load
   useEffect(() => {
     const loadRoomTypes = async () => {
       try {
@@ -1006,10 +815,13 @@ const GuestRegistration = () => {
     loadRoomTypes();
   }, []);
 
+  // Build date range
   const buildDateRange = (start, end) => {
     const range = [];
     let current = new Date(start);
     const endDate = new Date(end);
+    
+    // Create a range that includes start date up to but not including end date
     while (current < endDate) {
       range.push(new Date(current).toISOString().split('T')[0]);
       current = new Date(current.setDate(current.getDate() + 1));
@@ -1017,20 +829,63 @@ const GuestRegistration = () => {
     return range;
   };
 
-  const filterRooms = (rooms, details, roomType) => {
-    if (!roomType) return rooms;
-    return rooms.filter(room =>
-      details[room.roomNo] &&
-      details[room.roomNo].roomType &&
-      details[room.roomNo].roomType.name === roomType
-    );
+  // Fetch rooms when popup opens
+  useEffect(() => {
+    if (!isPopupOpen) return;
+    
+    fetchRoomData();
+  }, [isPopupOpen]);
+
+  // Fetch room availability data
+  const fetchRoomData = async () => {
+    if (!inDate || !outDate) {
+      return;
+    }
+    
+    if (inDate >= outDate) {
+      setError("Check-out date must be after check-in date.");
+      return;
+    }
+
+    setIsLoading(true);
+    setError(null);
+    
+    const inDateStr = formatISO(inDate, { representation: 'date' });
+    const outDateStr = formatISO(outDate, { representation: 'date' });
+    
+    try {
+      // Fetch data from the backend API
+      const response = await fetch(`${API_URL}/rooms/available-on-range?inDate=${inDateStr}&outDate=${outDateStr}`);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      setRoomData(data);
+      
+      // This will create a range from check-in date to the day before check-out date
+      const range = buildDateRange(inDate, outDate);
+      setDateRange(range);
+      
+      // Fetch additional details for each room
+      await fetchRoomDetails(data);
+    } catch (err) {
+      console.error('Error fetching room availability:', err);
+      setError('Failed to fetch room data. Please try again later.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const fetchRoomDetails = useCallback(async (rooms) => {
+  // Fetch room details for each room
+  const fetchRoomDetails = async (rooms) => {
     setIsLoadingDetails(true);
     const details = {};
+    
     try {
-      const promises = rooms.map(room =>
+      // Create an array of promises for fetching room details
+      const promises = rooms.map(room => 
         fetch(`${API_URL}/rooms/${room.roomNo}`)
           .then(response => {
             if (!response.ok) {
@@ -1043,64 +898,52 @@ const GuestRegistration = () => {
           })
           .catch(err => {
             console.error(`Error fetching details for room ${room.roomNo}:`, err);
-            details[room.roomNo] = {
-              roomNo: room.roomNo,
+            // Set a placeholder for failed requests
+            details[room.roomNo] = { 
+              roomNo: room.roomNo, 
               roomType: { name: 'Unknown', currentRate: 'N/A' },
               status: 'unknown'
             };
           })
       );
+      
+      // Wait for all promises to complete
       await Promise.all(promises);
       setRoomDetails(details);
+      
+      // Filter rooms based on room type if selected
       filterRooms(rooms, details, selectedRoomType);
     } catch (err) {
       console.error('Error fetching room details:', err);
     } finally {
       setIsLoadingDetails(false);
     }
-  }, [selectedRoomType]);
+  };
 
-  const fetchRoomData = useCallback(async () => {
-    if (!inDate || !outDate) return;
-    if (inDate >= outDate) {
-      setError("Check-out date must be after check-in date.");
-      return;
+  // Filter rooms based on selected room type
+  const filterRooms = (rooms, details, roomType) => {
+    if (!roomType) {
+      return rooms;
     }
+    
+    return rooms.filter(room => {
+      return details[room.roomNo] && 
+             details[room.roomNo].roomType && 
+             details[room.roomNo].roomType.name === roomType;
+    });
+  };
 
-    setIsLoading(true);
-    setError(null);
-
-    const inDateStr = formatISO(inDate, { representation: 'date' });
-    const outDateStr = formatISO(outDate, { representation: 'date' });
-
-    try {
-      const response = await fetch(`${API_URL}/rooms/available-on-range?inDate=${inDateStr}&outDate=${outDateStr}`);
-      if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-      const data = await response.json();
-      setRoomData(data);
-      const range = buildDateRange(inDate, outDate);
-      setDateRange(range);
-      await fetchRoomDetails(data);
-    } catch (err) {
-      console.error('Error fetching room availability:', err);
-      setError('Failed to fetch room data. Please try again later.');
-    } finally {
-      setIsLoading(false);
-    }
-  });
-
-  useEffect(() => {
-    if (!isPopupOpen) return;
-    fetchRoomData();
-  }, [isPopupOpen, fetchRoomData]);
-
+  // Handle room type selection change
   const handleRoomTypeChange = (e) => {
     const typeId = Number(e.target.value);
     setRoomTypeId(typeId);
+    
+    // Find the corresponding room type name
     const roomType = roomTypes.find(type => type.roomTypeId === typeId);
     setSelectedRoomType(roomType ? roomType.name : '');
   };
 
+  // Toggle room selection
   const toggleRoomSelection = (roomNo) => {
     setSelectedRooms(prev =>
       prev.includes(roomNo) ? prev.filter(r => r !== roomNo) : [...prev, roomNo]
@@ -1118,6 +961,7 @@ const GuestRegistration = () => {
       />
     </div>
   );
+
   return (
     <>
       {/* STEP 1 */}
