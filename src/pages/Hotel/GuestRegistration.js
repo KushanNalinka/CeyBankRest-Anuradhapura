@@ -1087,7 +1087,7 @@ const GuestRegistration = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [inDate, outDate, selectedRoomType, fetchRoomDetails]);
+  });
 
   useEffect(() => {
     if (!isPopupOpen) return;
