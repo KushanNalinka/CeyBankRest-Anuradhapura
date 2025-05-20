@@ -760,7 +760,7 @@
 // import GuestRegistrationNextForm from "./GuestRegistrationNextForm";
 // import { 
 //   Calendar, Clock, User, CreditCard, Bed, HotelIcon, 
-//   ChevronRight, X, Check, Filter
+//   ChevronRight, X, Check, Filter, ArrowLeft
 // } from "lucide-react";
 
 // // Constants
@@ -1430,48 +1430,7 @@ const GuestRegistration = () => {
     });
   };
 
-  // Fetch room details for each room - wrapped in useCallback
-  const fetchRoomDetails = useCallback(async (rooms) => {
-    setIsLoadingDetails(true);
-    const details = {};
-    
-    try {
-      // Create an array of promises for fetching room details
-      const promises = rooms.map(room => 
-        fetch(`${API_URL}/rooms/${room.roomNo}`)
-          .then(response => {
-            if (!response.ok) {
-              throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-            return response.json();
-          })
-          .then(data => {
-            details[room.roomNo] = data;
-          })
-          .catch(err => {
-            console.error(`Error fetching details for room ${room.roomNo}:`, err);
-            // Set a placeholder for failed requests
-            details[room.roomNo] = { 
-              roomNo: room.roomNo, 
-              roomType: { name: 'Unknown', currentRate: 'N/A' },
-              status: 'unknown'
-            };
-          })
-      );
-      
-      // Wait for all promises to complete
-      await Promise.all(promises);
-      setRoomDetails(details);
-      
-      // Filter rooms based on room type if selected
-      filterRooms(rooms, details, selectedRoomType);
-    } catch (err) {
-      console.error('Error fetching room details:', err);
-    } finally {
-      setIsLoadingDetails(false);
-    }
-  }, [selectedRoomType]);
-
+ 
   // Fetch room availability data - wrapped in useCallback
   const fetchRoomData = useCallback(async () => {
     if (!inDate || !outDate) {
