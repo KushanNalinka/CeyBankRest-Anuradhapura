@@ -47,6 +47,7 @@ import BillsPage from "./pages/Hotel/BillsPage";
 import FoodBillsTable from "./pages/bills/FoodBillsTable";
 import BeverageBillsTable from "./pages/bills/BeverageBillsTable";
 import RoomBillCard from "./pages/bills/RoomBillCard";
+import RoomChart from "./pages/Rooms/RoomChart";
 
 
 
@@ -129,6 +130,8 @@ export default function App() {
               <Route path="/foodbills" element={<FoodBillsTable />} />
                <Route path="/beveragebills" element={<BeverageBillsTable />} />
                <Route path="/roombills" element={<RoomBillCard />} />
+
+            <Route path="/roomchart" element={<RoomChart />} /> 
 
 
           </Route>
