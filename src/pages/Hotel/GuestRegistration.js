@@ -1361,8 +1361,8 @@ const GuestRegistration = () => {
     loadRoomTypes();
   }, []);
 
-  // Build date range
-  const buildDateRange = (start, end) => {
+  // Build date range - wrapped in useCallback
+  const buildDateRange = useCallback((start, end) => {
     const range = [];
     let current = new Date(start);
     const endDate = new Date(end);
@@ -1373,7 +1373,7 @@ const GuestRegistration = () => {
       current = new Date(current.setDate(current.getDate() + 1));
     }
     return range;
-  };
+  }, []);
 
   // Fetch room details for each room
   const fetchRoomDetails = async (rooms) => {
@@ -1430,6 +1430,48 @@ const GuestRegistration = () => {
     });
   };
 
+  // Fetch room details for each room - wrapped in useCallback
+  const fetchRoomDetails = useCallback(async (rooms) => {
+    setIsLoadingDetails(true);
+    const details = {};
+    
+    try {
+      // Create an array of promises for fetching room details
+      const promises = rooms.map(room => 
+        fetch(`${API_URL}/rooms/${room.roomNo}`)
+          .then(response => {
+            if (!response.ok) {
+              throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+          })
+          .then(data => {
+            details[room.roomNo] = data;
+          })
+          .catch(err => {
+            console.error(`Error fetching details for room ${room.roomNo}:`, err);
+            // Set a placeholder for failed requests
+            details[room.roomNo] = { 
+              roomNo: room.roomNo, 
+              roomType: { name: 'Unknown', currentRate: 'N/A' },
+              status: 'unknown'
+            };
+          })
+      );
+      
+      // Wait for all promises to complete
+      await Promise.all(promises);
+      setRoomDetails(details);
+      
+      // Filter rooms based on room type if selected
+      filterRooms(rooms, details, selectedRoomType);
+    } catch (err) {
+      console.error('Error fetching room details:', err);
+    } finally {
+      setIsLoadingDetails(false);
+    }
+  }, [selectedRoomType]);
+
   // Fetch room availability data - wrapped in useCallback
   const fetchRoomData = useCallback(async () => {
     if (!inDate || !outDate) {
@@ -1470,7 +1512,7 @@ const GuestRegistration = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [inDate, outDate]); // Add only the dependencies that are used inside the function
+  }, [inDate, outDate, fetchRoomDetails]); // Added fetchRoomDetails as a dependency
 
   // Fetch rooms when popup opens
   useEffect(() => {
