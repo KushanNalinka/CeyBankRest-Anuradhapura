@@ -200,7 +200,7 @@
 
 // export default GoodRequestTab;
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useGoodRequest } from '../../context/GoodRequestContext';
 import { products } from '../../Store';
 import GoodRequestItem from './GoodRequestItem';
@@ -212,6 +212,7 @@ const GoodRequestTab = () => {
   const [modalConfirmed, setModalConfirmed] = useState(false);
   const [orderConfirmed, setOrderConfirmed] = useState(false);
 
+
   // Helpers to generate ID and dates
   const generateId = () => {
     const num = Math.floor(1e7 + Math.random() * 9e7);
@@ -221,7 +222,17 @@ const GoodRequestTab = () => {
   const generateDateDisplay = () => new Date().toLocaleString();
 
   // State for current requisition
-  const [storeReqId, setStoreReqId] = useState(generateId);
+  // const [storeReqId, setStoreReqId] = useState(generateId);
+  const [storeReqId, setStoreReqId] = useState(() => {
+  const saved = sessionStorage.getItem('goodReqId');
+  return saved || generateId();
+});
+
+  // ⬇ Persist requisition ID to sessionStorage
+  useEffect(() => {
+    sessionStorage.setItem('goodReqId', storeReqId);
+  }, [storeReqId]);
+
   const [datePayload, setDatePayload] = useState(generateDatePayload);
   const [dateDisplay, setDateDisplay] = useState(generateDateDisplay);
 
@@ -262,6 +273,7 @@ const GoodRequestTab = () => {
 
       // Success: reset UI
       clearRequests();
+      sessionStorage.removeItem('goodReqId');
       setModalConfirmed(false);
       setOrderConfirmed(false);
       setShowModal(false);
