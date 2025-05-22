@@ -1,5 +1,316 @@
 
 
+// import { useEffect, useState } from "react";
+// import DatePicker from "react-datepicker";
+// import { addDays, differenceInCalendarDays, formatISO } from "date-fns";
+// import "react-datepicker/dist/react-datepicker.css";
+// import { usePopup } from "../../context/PopupContext";
+// import RoomChart from "./RoomChart";
+// import GuestRegistrationNextForm from "./GuestRegistrationNextForm";
+
+// // Constants
+// const GUEST_TYPES = ["staff", "nonstaff", "pensioners", "clergy", "vip", "foreigners", "others"];
+// //const PAGE_SIZE = 10;
+
+// const GuestRegistration = () => {
+//   const today = new Date();
+
+//   // Guest info states
+//   const [guestType, setGuestType] = useState(GUEST_TYPES[0]);
+//   const [pif, setPif] = useState(""); // PIF / NIC / Passport
+//   const [roomTypeId, setRoomTypeId] = useState(null); // selected room type
+//   const [roomTypes, setRoomTypes] = useState([]); // dropdown room types
+
+//   // Date pickers
+//   const [inDate, setInDate] = useState(today);
+//   const [outDate, setOutDate] = useState(addDays(today, 1));
+
+//   // Room & pagination data
+//   const [rooms, setRooms] = useState([]);
+//   const [statusMap] = useState({});
+//   const [page, setPage] = useState(0);
+//   const [hasNext, setHasNext] = useState(false);
+//   const [loading, setLoading] = useState(false);
+
+//   const { isPopupOpen, openPopup, closePopup } = usePopup();
+
+//   const [selectedRooms, setSelectedRooms] = useState([]);
+//   const [step, setStep] = useState(1);
+
+//   const nights = Math.max(1, differenceInCalendarDays(outDate, inDate) + 1);
+
+//   // Fetch room types from API on first load
+//   useEffect(() => {
+//     const loadRoomTypes = async () => {
+//       try {
+//         const res = await fetch("http://localhost:8080/api/room-types");
+//         const data = await res.json();
+//         setRoomTypes(data);
+//         if (data.length > 0) setRoomTypeId(data[0].roomTypeId);
+//       } catch (e) {
+//         console.error("Error fetching room types", e);
+//       }
+//     };
+//     loadRoomTypes();
+//   }, []);
+
+//   // Fetch rooms when popup opens or dates / type / page changes
+//   useEffect(() => {
+//     if (!isPopupOpen || roomTypeId === null) return;
+
+//     const fetchData = async () => {
+//       setLoading(true);
+//       try {
+//         const startISO = formatISO(inDate, { representation: "date" });
+//         const res = await fetch(
+//           `http://localhost:8080/api/rooms/available-on-date-by-type?date=${startISO}&roomTypeId=${roomTypeId}`
+//         );
+//         const apiRooms = await res.json();
+//         const convertedRooms = apiRooms.map((room, idx) => ({
+//           id: idx + 1,
+//           name: `Room ${room.roomNo}`,
+//         }));
+//         setRooms(convertedRooms);
+//         setHasNext(false);
+//       } catch (err) {
+//         console.error(err);
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
+
+//     fetchData();
+//   }, [isPopupOpen, page, inDate, outDate, roomTypeId]);
+
+//   const nextPage = () => hasNext && setPage(prev => prev + 1);
+//   const prevPage = () => page > 0 && setPage(prev => prev - 1);
+
+//   const toggleRoomSelection = roomName => {
+//     setSelectedRooms(prev =>
+//       prev.includes(roomName) ? prev.filter(r => r !== roomName) : [...prev, roomName]
+//     );
+//   };
+
+//   return (
+//     <>
+//       {/* STEP 1 */}
+//       {step === 1 && (
+//         <div className="w-full max-w-6xl space-y-6 bg-white shadow-xl rounded-2xl p-8">
+//           <h1 className="text-2xl font-semibold mb-4">Guest Registration</h1>
+
+//           <div className="grid md:grid-cols-3 gap-6">
+//             {/* Guest Type */}
+//             <div className="flex flex-col">
+//               <label className="mb-1 font-medium">Guest Type</label>
+//               <select
+//                 value={guestType}
+//                 onChange={e => setGuestType(e.target.value)}
+//                 className="border rounded-lg p-2 outline-none focus:ring focus:ring-indigo-300"
+//               >
+//                 {GUEST_TYPES.map(t => (
+//                   <option key={t} value={t}>
+//                     {t.charAt(0).toUpperCase() + t.slice(1)}
+//                   </option>
+//                 ))}
+//               </select>
+//             </div>
+
+//             {/* PIF / NIC / Passport */}
+//             <div className="flex flex-col">
+//               <label className="mb-1 font-medium">PIF / NIC / Passport</label>
+//               <input
+//                 type="text"
+//                 value={pif}
+//                 onChange={e => setPif(e.target.value)}
+//                 className="border rounded-lg p-2 outline-none focus:ring focus:ring-indigo-300"
+//               />
+//             </div>
+
+//             {/* Room Type Dropdown */}
+//             <div className="flex flex-col">
+//               <label className="mb-1 font-medium">Room Type</label>
+//               <select
+//                 value={roomTypeId ?? ""}
+//                 onChange={e => setRoomTypeId(Number(e.target.value))}
+//                 className="border rounded-lg p-2 outline-none focus:ring focus:ring-indigo-300"
+//               >
+//                 {roomTypes.map(t => (
+//                   <option key={t.roomTypeId} value={t.roomTypeId}>
+//                     {t.name}
+//                   </option>
+//                 ))}
+//               </select>
+//             </div>
+//           </div>
+
+//           {/* Dates */}
+//           <div className="grid md:grid-cols-2 gap-6 mt-6">
+//             {/* Arrival */}
+//             <div className="flex flex-col">
+//               <label className="mb-1 font-medium">Arrival (Check-in)</label>
+//               <DatePicker
+//                 selected={inDate}
+//                 onChange={date => date && setInDate(date)}
+//                 selectsStart
+//                 startDate={inDate}
+//                 endDate={outDate}
+//                 className="border rounded-lg p-2 w-full outline-none focus:ring focus:ring-indigo-300"
+//                 dateFormat="dd/MM/yyyy"
+//               />
+//             </div>
+
+//             {/* Departure */}
+//             <div className="flex flex-col">
+//               <label className="mb-1 font-medium">Departure (Check-out)</label>
+//               <DatePicker
+//                 selected={outDate}
+//                 onChange={date => date && setOutDate(date)}
+//                 selectsEnd
+//                 startDate={inDate}
+//                 endDate={outDate}
+//                 minDate={inDate}
+//                 className="border rounded-lg p-2 w-full outline-none focus:ring focus:ring-indigo-300"
+//                 dateFormat="dd/MM/yyyy"
+//               />
+//             </div>
+//           </div>
+
+//           {/* Select Room */}
+//           <button
+//             onClick={() => {
+//               setPage(0);
+//               openPopup();
+//             }}
+//             className="px-6 py-2 mt-6 rounded bg-indigo-600 text-white hover:bg-indigo-700"
+//           >
+//             Select Room
+//           </button>
+
+//           {/* Selected Rooms */}
+//           {selectedRooms.length > 0 && (
+//             <div className="mt-6">
+//               <h2 className="text-lg font-semibold mb-2">Selected Rooms:</h2>
+//               <div className="flex flex-wrap gap-2">
+//                 {selectedRooms.map(room => (
+//                   <div
+//                     key={room}
+//                     className="flex items-center gap-2 bg-green-100 text-green-700 px-3 py-1 rounded-full"
+//                   >
+//                     <span>{room}</span>
+//                     <button
+//                       onClick={() => toggleRoomSelection(room)}
+//                       className="text-red-500 hover:text-red-700"
+//                     >
+//                       ✕
+//                     </button>
+//                   </div>
+//                 ))}
+//               </div>
+
+//               <p className="mt-2 text-gray-600 text-sm">
+//                 Selected for {nights} {nights === 1 ? "night" : "nights"}
+//               </p>
+
+//               <button
+//                 onClick={() => setStep(2)}
+//                 className="mt-6 px-6 py-2 rounded bg-green-600 text-white hover:bg-green-700"
+//               >
+//                 Next
+//               </button>
+//             </div>
+//           )}
+//         </div>
+//       )}
+
+//       {step === 2 && (
+//         <GuestRegistrationNextForm
+//           inDate={inDate}
+//           outDate={outDate}
+//           selectedRooms={selectedRooms}
+//           nicPassportPf={pif}
+//           durationOfStay={`${nights} ${nights === 1 ? "day" : "days"}`}
+//           onBack={() => setStep(1)}
+//         />
+//       )}
+
+//       {/* POPUP */}
+//       {isPopupOpen && (
+//         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+//           <div className="bg-white rounded-lg w-[90%] max-w-7xl max-h-[90vh] overflow-hidden shadow-2xl flex flex-col">
+//             {/* Header */}
+//             <div className="px-6 py-4 border-b flex justify-between items-center">
+//               <h2 className="text-lg font-semibold">
+//                 Room chart (
+//                 {formatISO(inDate, { representation: "date" })} ➔{" "}
+//                 {formatISO(outDate, { representation: "date" })})
+//               </h2>
+//               <button
+//                 onClick={closePopup}
+//                 className="text-gray-500 hover:text-gray-700 text-xl"
+//               >
+//                 ✕
+//               </button>
+//             </div>
+
+//             {/* Body */}
+//             <div className="flex-1 overflow-x-auto overflow-y-auto">
+//               {loading ? (
+//                 <div className="h-full flex items-center justify-center">
+//                   <span className="animate-pulse text-gray-500">Loading…</span>
+//                 </div>
+//               ) : (
+//                 <RoomChart
+//                   start={inDate}
+//                   end={outDate}
+//                   rooms={rooms}
+//                   statusMap={statusMap}
+//                   selectedRooms={selectedRooms}
+//                   onToggleRoom={toggleRoomSelection}
+//                 />
+//               )}
+//             </div>
+
+//             {/* Footer */}
+//             <div className="px-6 py-4 border-t flex items-center justify-between">
+//               <button
+//                 onClick={prevPage}
+//                 disabled={page === 0}
+//                 className={`px-4 py-1 rounded ${
+//                   page === 0
+//                     ? "bg-gray-200 text-gray-400"
+//                     : "bg-indigo-600 text-white hover:bg-indigo-700"
+//                 }`}
+//               >
+//                 Previous
+//               </button>
+
+//               <button
+//                 onClick={closePopup}
+//                 className="px-6 py-2 rounded bg-green-600 text-white hover:bg-green-700"
+//               >
+//                 Confirm Selection
+//               </button>
+
+//               <button
+//                 onClick={nextPage}
+//                 disabled={!hasNext}
+//                 className={`px-4 py-1 rounded ${
+//                   !hasNext
+//                     ? "bg-gray-200 text-gray-400"
+//                     : "bg-indigo-600 text-white hover:bg-indigo-700"
+//                 }`}
+//               >
+//                 Next
+//               </button>
+//             </div>
+//           </div>
+//         </div>
+//       )}
+//     </>
+//   );
+// };
+
+// export default GuestRegistration;
 import { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import { addDays, differenceInCalendarDays, formatISO } from "date-fns";
@@ -9,216 +320,245 @@ import RoomChart from "./RoomChart";
 import GuestRegistrationNextForm from "./GuestRegistrationNextForm";
 
 // Constants
-const GUEST_TYPES = ["staff", "nonstaff", "pensioners", "clergy", "vip", "foreigners", "others"];
-//const PAGE_SIZE = 10;
+const GUEST_TYPES = [
+  "staff",
+  "nonstaff",
+  "pensioners",
+  "clergy",
+  "vip",
+  "foreigners",
+  "others",
+];
 
-const GuestRegistration = () => {
+export default function GuestRegistration() {
   const today = new Date();
 
-  // Guest info states
+  // form state
   const [guestType, setGuestType] = useState(GUEST_TYPES[0]);
-  const [pif, setPif] = useState(""); // PIF / NIC / Passport
-  const [roomTypeId, setRoomTypeId] = useState(null); // selected room type
-  const [roomTypes, setRoomTypes] = useState([]); // dropdown room types
-
-  // Date pickers
+  const [pif, setPif] = useState("");
+  const [roomTypeId, setRoomTypeId] = useState(null);
   const [inDate, setInDate] = useState(today);
   const [outDate, setOutDate] = useState(addDays(today, 1));
 
-  // Room & pagination data
+  // errors
+  const [errors, setErrors] = useState({});
+
+  // popup/rooms state
+  const [roomTypes, setRoomTypes] = useState([]);
   const [rooms, setRooms] = useState([]);
-  const [statusMap] = useState({});
   const [page, setPage] = useState(0);
   const [hasNext, setHasNext] = useState(false);
   const [loading, setLoading] = useState(false);
-
   const { isPopupOpen, openPopup, closePopup } = usePopup();
 
+  // selection
   const [selectedRooms, setSelectedRooms] = useState([]);
   const [step, setStep] = useState(1);
 
-  const nights = Math.max(1, differenceInCalendarDays(outDate, inDate) + 1);
+  const nights = Math.max(
+    1,
+    differenceInCalendarDays(outDate, inDate) + 1
+  );
 
-  // Fetch room types from API on first load
+  // load room types
   useEffect(() => {
-    const loadRoomTypes = async () => {
-      try {
-        const res = await fetch("http://localhost:8080/api/room-types");
-        const data = await res.json();
+    fetch("http://localhost:8080/api/room-types")
+      .then((r) => r.json())
+      .then((data) => {
         setRoomTypes(data);
-        if (data.length > 0) setRoomTypeId(data[0].roomTypeId);
-      } catch (e) {
-        console.error("Error fetching room types", e);
-      }
-    };
-    loadRoomTypes();
+        if (data.length) setRoomTypeId(data[0].roomTypeId);
+      })
+      .catch(console.error);
   }, []);
 
-  // Fetch rooms when popup opens or dates / type / page changes
+  // fetch available rooms
   useEffect(() => {
     if (!isPopupOpen || roomTypeId === null) return;
-
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const startISO = formatISO(inDate, { representation: "date" });
-        const res = await fetch(
-          `http://localhost:8080/api/rooms/available-on-date-by-type?date=${startISO}&roomTypeId=${roomTypeId}`
+    setLoading(true);
+    const iso = formatISO(inDate, { representation: "date" });
+    fetch(
+      `http://localhost:8080/api/rooms/available-on-date-by-type?date=${iso}&roomTypeId=${roomTypeId}`
+    )
+      .then((r) => r.json())
+      .then((apiRooms) => {
+        setRooms(
+          apiRooms.map((r, i) => ({ id: i + 1, name: `Room ${r.roomNo}` }))
         );
-        const apiRooms = await res.json();
-        const convertedRooms = apiRooms.map((room, idx) => ({
-          id: idx + 1,
-          name: `Room ${room.roomNo}`,
-        }));
-        setRooms(convertedRooms);
         setHasNext(false);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
+      })
+      .catch(console.error)
+      .finally(() => setLoading(false));
+  }, [isPopupOpen, page, inDate, roomTypeId]);
 
-    fetchData();
-  }, [isPopupOpen, page, inDate, outDate, roomTypeId]);
-
-  const nextPage = () => hasNext && setPage(prev => prev + 1);
-  const prevPage = () => page > 0 && setPage(prev => prev - 1);
-
-  const toggleRoomSelection = roomName => {
-    setSelectedRooms(prev =>
-      prev.includes(roomName) ? prev.filter(r => r !== roomName) : [...prev, roomName]
-    );
+  const validate = () => {
+    const e = {};
+    if (!guestType) e.guestType = "Please select a guest type";
+    if (!pif.trim()) e.pif = "This field is required";
+    if (!roomTypeId) e.roomTypeId = "Please pick a room type";
+    if (!inDate) e.inDate = "Required";
+    if (!outDate) e.outDate = "Required";
+    setErrors(e);
+    return Object.keys(e).length === 0;
   };
+
+  const tryOpenPopup = () => {
+    if (!validate()) return;
+    setPage(0);
+    openPopup();
+  };
+
+  const toggleRoom = (name) =>
+    setSelectedRooms((prev) =>
+      prev.includes(name) ? prev.filter((r) => r !== name) : [...prev, name]
+    );
 
   return (
     <>
-      {/* STEP 1 */}
       {step === 1 && (
-        <div className="w-full max-w-6xl space-y-6 bg-white shadow-xl rounded-2xl p-8">
-          <h1 className="text-2xl font-semibold mb-4">Guest Registration</h1>
+        <div className="flex items-center justify-center py-16">
+          <div className="w-full max-w-4xl bg-gradient-to-b from-blue-300 to-blue-100 shadow-xl rounded-2xl p-12 space-y-8">
+            <h1 className="text-2xl font-semibold">Guest Registration</h1>
 
-          <div className="grid md:grid-cols-3 gap-6">
-            {/* Guest Type */}
-            <div className="flex flex-col">
-              <label className="mb-1 font-medium">Guest Type</label>
-              <select
-                value={guestType}
-                onChange={e => setGuestType(e.target.value)}
-                className="border rounded-lg p-2 outline-none focus:ring focus:ring-indigo-300"
-              >
-                {GUEST_TYPES.map(t => (
-                  <option key={t} value={t}>
-                    {t.charAt(0).toUpperCase() + t.slice(1)}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* PIF / NIC / Passport */}
-            <div className="flex flex-col">
-              <label className="mb-1 font-medium">PIF / NIC / Passport</label>
-              <input
-                type="text"
-                value={pif}
-                onChange={e => setPif(e.target.value)}
-                className="border rounded-lg p-2 outline-none focus:ring focus:ring-indigo-300"
-              />
-            </div>
-
-            {/* Room Type Dropdown */}
-            <div className="flex flex-col">
-              <label className="mb-1 font-medium">Room Type</label>
-              <select
-                value={roomTypeId ?? ""}
-                onChange={e => setRoomTypeId(Number(e.target.value))}
-                className="border rounded-lg p-2 outline-none focus:ring focus:ring-indigo-300"
-              >
-                {roomTypes.map(t => (
-                  <option key={t.roomTypeId} value={t.roomTypeId}>
-                    {t.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          {/* Dates */}
-          <div className="grid md:grid-cols-2 gap-6 mt-6">
-            {/* Arrival */}
-            <div className="flex flex-col">
-              <label className="mb-1 font-medium">Arrival (Check-in)</label>
-              <DatePicker
-                selected={inDate}
-                onChange={date => date && setInDate(date)}
-                selectsStart
-                startDate={inDate}
-                endDate={outDate}
-                className="border rounded-lg p-2 w-full outline-none focus:ring focus:ring-indigo-300"
-                dateFormat="dd/MM/yyyy"
-              />
-            </div>
-
-            {/* Departure */}
-            <div className="flex flex-col">
-              <label className="mb-1 font-medium">Departure (Check-out)</label>
-              <DatePicker
-                selected={outDate}
-                onChange={date => date && setOutDate(date)}
-                selectsEnd
-                startDate={inDate}
-                endDate={outDate}
-                minDate={inDate}
-                className="border rounded-lg p-2 w-full outline-none focus:ring focus:ring-indigo-300"
-                dateFormat="dd/MM/yyyy"
-              />
-            </div>
-          </div>
-
-          {/* Select Room */}
-          <button
-            onClick={() => {
-              setPage(0);
-              openPopup();
-            }}
-            className="px-6 py-2 mt-6 rounded bg-indigo-600 text-white hover:bg-indigo-700"
-          >
-            Select Room
-          </button>
-
-          {/* Selected Rooms */}
-          {selectedRooms.length > 0 && (
-            <div className="mt-6">
-              <h2 className="text-lg font-semibold mb-2">Selected Rooms:</h2>
-              <div className="flex flex-wrap gap-2">
-                {selectedRooms.map(room => (
-                  <div
-                    key={room}
-                    className="flex items-center gap-2 bg-green-100 text-green-700 px-3 py-1 rounded-full"
-                  >
-                    <span>{room}</span>
-                    <button
-                      onClick={() => toggleRoomSelection(room)}
-                      className="text-red-500 hover:text-red-700"
-                    >
-                      ✕
-                    </button>
-                  </div>
-                ))}
+            <div className="grid md:grid-cols-3 gap-6">
+              {/* guest type */}
+              <div className="flex flex-col">
+                <label className="mb-1 font-medium">Guest Type</label>
+                <select
+                  value={guestType}
+                  onChange={(e) => setGuestType(e.target.value)}
+                  className="w-full rounded-lg p-2 bg-yellow-50 border border-yellow-300 focus:outline-none focus:ring-2 focus:ring-yellow-500 transition"
+                >
+                  {GUEST_TYPES.map((t) => (
+                    <option key={t} value={t}>
+                      {t.charAt(0).toUpperCase() + t.slice(1)}
+                    </option>
+                  ))}
+                </select>
+                {errors.guestType && (
+                  <p className="text-red-600 text-sm mt-1">
+                    {errors.guestType}
+                  </p>
+                )}
               </div>
 
-              <p className="mt-2 text-gray-600 text-sm">
-                Selected for {nights} {nights === 1 ? "night" : "nights"}
-              </p>
+              {/* PIF */}
+              <div className="flex flex-col">
+                <label className="mb-1 font-medium">
+                  PF / NIC / Passport
+                </label>
+                <input
+                  type="text"
+                  value={pif}
+                  onChange={(e) => setPif(e.target.value)}
+                  className="w-full rounded-lg p-2 bg-yellow-50 border border-yellow-300 focus:outline-none focus:ring-2 focus:ring-yellow-500 transition"
+                />
+                {errors.pif && (
+                  <p className="text-red-600 text-sm mt-1">{errors.pif}</p>
+                )}
+              </div>
 
-              <button
-                onClick={() => setStep(2)}
-                className="mt-6 px-6 py-2 rounded bg-green-600 text-white hover:bg-green-700"
-              >
-                Next
-              </button>
+              {/* room type */}
+              <div className="flex flex-col">
+                <label className="mb-1 font-medium">Room Type</label>
+                <select
+                  value={roomTypeId ?? ""}
+                  onChange={(e) =>
+                    setRoomTypeId(Number(e.target.value))
+                  }
+                  className="w-full rounded-lg p-2 bg-yellow-50 border border-yellow-300 focus:outline-none focus:ring-2 focus:ring-yellow-500 transition"
+                >
+                  {roomTypes.map((t) => (
+                    <option key={t.roomTypeId} value={t.roomTypeId}>
+                      {t.name}
+                    </option>
+                  ))}
+                </select>
+                {errors.roomTypeId && (
+                  <p className="text-red-600 text-sm mt-1">
+                    {errors.roomTypeId}
+                  </p>
+                )}
+              </div>
             </div>
-          )}
+
+            <div className="grid md:grid-cols-2 gap-6">
+              {/* arrival */}
+              <div className="flex flex-col">
+                <label className="mb-1 font-medium">
+                  Arrival (Check-in)
+                </label>
+                <DatePicker
+                  selected={inDate}
+                  onChange={(d) => setInDate(d || inDate)}
+                  className="w-full rounded-lg p-2 bg-yellow-50 border border-yellow-300 focus:outline-none focus:ring-2 focus:ring-yellow-500 transition"
+                  dateFormat="dd/MM/yyyy"
+                />
+                {errors.inDate && (
+                  <p className="text-red-600 text-sm mt-1">
+                    {errors.inDate}
+                  </p>
+                )}
+              </div>
+              {/* departure */}
+              <div className="flex flex-col">
+                <label className="mb-1 font-medium">
+                  Departure (Check-out)
+                </label>
+                <DatePicker
+                  selected={outDate}
+                  onChange={(d) => setOutDate(d || outDate)}
+                  className="w-full rounded-lg p-2 bg-yellow-50 border border-yellow-300 focus:outline-none focus:ring-2 focus:ring-yellow-500 transition"
+                  dateFormat="dd/MM/yyyy"
+                />
+                {errors.outDate && (
+                  <p className="text-red-600 text-sm mt-1">
+                    {errors.outDate}
+                  </p>
+                )}
+              </div>
+            </div>
+
+            <button
+              onClick={tryOpenPopup}
+              className="px-6 py-3 rounded-lg bg-yellow-500 text-white font-medium hover:bg-yellow-600 transition"
+            >
+              Select Room
+            </button>
+
+            {selectedRooms.length > 0 && (
+              <div className="space-y-4">
+                <h2 className="text-lg font-semibold">
+                  Selected Rooms:
+                </h2>
+                <div className="flex flex-wrap gap-2">
+                  {selectedRooms.map((r) => (
+                    <div
+                      key={r}
+                      className="flex items-center gap-2 bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full"
+                    >
+                      <span>{r}</span>
+                      <button
+                        onClick={() => toggleRoom(r)}
+                        className="text-yellow-600 hover:text-yellow-800"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  ))}
+                </div>
+                <p className="text-gray-700 text-sm">
+                  Selected for {nights}{" "}
+                  {nights === 1 ? "night" : "nights"}
+                </p>
+                <button
+                  onClick={() => setStep(2)}
+                  className="px-6 py-3 rounded-lg bg-yellow-500 text-white font-medium hover:bg-yellow-600 transition"
+                >
+                  Next
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       )}
 
@@ -228,86 +568,20 @@ const GuestRegistration = () => {
           outDate={outDate}
           selectedRooms={selectedRooms}
           nicPassportPf={pif}
-          durationOfStay={`${nights} ${nights === 1 ? "day" : "days"}`}
+          durationOfStay={`${nights} ${
+            nights === 1 ? "day" : "days"
+          }`}
           onBack={() => setStep(1)}
         />
       )}
 
-      {/* POPUP */}
       {isPopupOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
           <div className="bg-white rounded-lg w-[90%] max-w-7xl max-h-[90vh] overflow-hidden shadow-2xl flex flex-col">
-            {/* Header */}
-            <div className="px-6 py-4 border-b flex justify-between items-center">
-              <h2 className="text-lg font-semibold">
-                Room chart (
-                {formatISO(inDate, { representation: "date" })} ➔{" "}
-                {formatISO(outDate, { representation: "date" })})
-              </h2>
-              <button
-                onClick={closePopup}
-                className="text-gray-500 hover:text-gray-700 text-xl"
-              >
-                ✕
-              </button>
-            </div>
-
-            {/* Body */}
-            <div className="flex-1 overflow-x-auto overflow-y-auto">
-              {loading ? (
-                <div className="h-full flex items-center justify-center">
-                  <span className="animate-pulse text-gray-500">Loading…</span>
-                </div>
-              ) : (
-                <RoomChart
-                  start={inDate}
-                  end={outDate}
-                  rooms={rooms}
-                  statusMap={statusMap}
-                  selectedRooms={selectedRooms}
-                  onToggleRoom={toggleRoomSelection}
-                />
-              )}
-            </div>
-
-            {/* Footer */}
-            <div className="px-6 py-4 border-t flex items-center justify-between">
-              <button
-                onClick={prevPage}
-                disabled={page === 0}
-                className={`px-4 py-1 rounded ${
-                  page === 0
-                    ? "bg-gray-200 text-gray-400"
-                    : "bg-indigo-600 text-white hover:bg-indigo-700"
-                }`}
-              >
-                Previous
-              </button>
-
-              <button
-                onClick={closePopup}
-                className="px-6 py-2 rounded bg-green-600 text-white hover:bg-green-700"
-              >
-                Confirm Selection
-              </button>
-
-              <button
-                onClick={nextPage}
-                disabled={!hasNext}
-                className={`px-4 py-1 rounded ${
-                  !hasNext
-                    ? "bg-gray-200 text-gray-400"
-                    : "bg-indigo-600 text-white hover:bg-indigo-700"
-                }`}
-              >
-                Next
-              </button>
-            </div>
+            {/* ...popup content */}
           </div>
         </div>
       )}
     </>
   );
-};
-
-export default GuestRegistration;
+}

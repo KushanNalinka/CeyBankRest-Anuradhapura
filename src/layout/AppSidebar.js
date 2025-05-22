@@ -877,7 +877,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router';
-import ceylon from '../assets/images/cey.png';
+import ceylon from '../assets/images/ceybank-logo.jpeg';
 
 /* ─ Icons ─ */
 import { Grid, Calendar, UserCircle, Plug, ChevronDown, MoreHorizontal } from 'lucide-react';
@@ -986,10 +986,10 @@ const othersItems = [
 /* ───────────────────────────────────────────── */
 /*                Component                      */
 /* ───────────────────────────────────────────── */
+
 const AppSidebar = () => {
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
   const location = useLocation();
-
   const [openSubmenu, setOpenSubmenu] = useState(null);
   const [subMenuHeight, setSubMenuHeight] = useState({});
   const subMenuRefs = useRef({});
@@ -1030,30 +1030,33 @@ const AppSidebar = () => {
     setOpenSubmenu((p) => (p && p.type === type && p.index === index ? null : { type, index }));
 
   /* ─ helper to render groups ─ */
+  
   const renderMenu = (items, type) => (
-    <ul className="flex flex-col gap-[3px]">
+    <ul className="flex flex-col gap-1">
       {items.map((nav, i) => (
         <li key={nav.name}>
           {nav.subItems ? (
             <button
               onClick={() => toggleSubmenu(i, type)}
               className={[
-                'flex items-center gap-3 w-full rounded-lg px-3 py-2 transition group',
-                'text-sm font-medium',
+                'flex items-center gap-3 w-full px-4 py-2 rounded-lg transition',
+                'text-white text-sm font-medium',
                 openSubmenu?.type === type && openSubmenu?.index === i
-                  ? 'bg-brand-50/60 dark:bg-brand-400/10 text-brand-600 dark:text-brand-400'
-                  : 'hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-300',
-                !isExpanded && !isHovered ? 'lg:justify-center' : 'lg:justify-start',
+                  ? 'bg-blue-800 text-white'
+                  : 'hover:bg-blue-700 hover:text-white',
+                !isExpanded && !isHovered ? 'justify-center' : 'justify-start',
               ].join(' ')}
             >
-              <span className="shrink-0 text-[20px]">{nav.icon}</span>
+              <span className="text-lg">{nav.icon}</span>
               {(isExpanded || isHovered || isMobileOpen) && (
                 <>
                   <span>{nav.name}</span>
                   <ChevronDown
-                    size={18}
-                    className={`ml-auto transition-transform duration-300 ${
-                      openSubmenu?.type === type && openSubmenu?.index === i ? 'rotate-180' : ''
+                    size={16}
+                    className={`ml-auto transition-transform ${
+                      openSubmenu?.type === type && openSubmenu?.index === i
+                        ? 'rotate-180'
+                        : ''
                     }`}
                   />
                 </>
@@ -1064,21 +1067,19 @@ const AppSidebar = () => {
               <Link
                 to={nav.path}
                 className={[
-                  'flex items-center gap-3 w-full rounded-lg px-3 py-2 transition',
-                  'text-sm font-medium',
+                  'flex items-center gap-3 w-full px-4 py-2 rounded-lg transition',
                   isActive(nav.path)
-                    ? 'bg-brand-100 dark:bg-brand-400/20 text-brand-700 dark:text-brand-300'
-                    : 'hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-300',
-                  !isExpanded && !isHovered ? 'lg:justify-center' : 'lg:justify-start',
+                    ? 'bg-blue-800 text-white'
+                    : 'text-white hover:bg-blue-700 hover:text-white',
+                  !isExpanded && !isHovered ? 'justify-center' : 'justify-start',
                 ].join(' ')}
               >
-                <span className="shrink-0 text-[20px]">{nav.icon}</span>
+                <span className="text-lg">{nav.icon}</span>
                 {(isExpanded || isHovered || isMobileOpen) && <span>{nav.name}</span>}
               </Link>
             )
           )}
 
-          {/* collapsible sub-items */}
           {nav.subItems && (isExpanded || isHovered || isMobileOpen) && (
             <div
               ref={(el) => (subMenuRefs.current[`${type}-${i}`] = el)}
@@ -1088,33 +1089,21 @@ const AppSidebar = () => {
                     ? `${subMenuHeight[`${type}-${i}`]}px`
                     : '0px',
               }}
-              className="overflow-hidden transition-all duration-300 ease-in-out"
+              className="overflow-hidden transition-all duration-300 pl-8"
             >
-              <ul className="flex flex-col gap-[2px] ml-[44px] mt-[2px]">
+              <ul className="flex flex-col gap-1">
                 {nav.subItems.map((s) => (
                   <li key={s.name}>
                     <Link
                       to={s.path}
                       className={[
-                        'relative flex items-center rounded-md px-2.5 py-1.5 text-sm',
+                        'block px-2 py-1 rounded-md text-sm transition',
                         isActive(s.path)
-                          ? 'font-medium text-brand-600 dark:text-brand-300 before:absolute before:-left-3 before:top-1/2 before:-translate-y-1/2 before:h-2 before:w-2 before:rounded-full before:bg-brand-500'
-                          : 'text-gray-500 dark:text-gray-400 hover:text-brand-500',
+                          ? 'bg-yellow-500 text-white'
+                          : 'text-white hover:bg-yellow-500 hover:text-white',
                       ].join(' ')}
                     >
                       {s.name}
-                      {(s.new || s.pro) && (
-                        <span
-                          className={[
-                            'ml-2 rounded-full px-2 py-[1px] text-[10px] leading-none',
-                            isActive(s.path)
-                              ? 'bg-brand-100 text-brand-700 dark:bg-brand-400/20 dark:text-brand-200'
-                              : 'bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-300',
-                          ].join(' ')}
-                        >
-                          {s.new ? 'new' : 'pro'}
-                        </span>
-                      )}
                     </Link>
                   </li>
                 ))}
@@ -1126,66 +1115,62 @@ const AppSidebar = () => {
     </ul>
   );
 
-  /* ────────────────── render ────────────────── */
   return (
     <aside
       className={[
         'fixed inset-y-0 left-0 z-50 flex flex-col',
-        'bg-white/70 dark:bg-gray-900/80 backdrop-blur-md border-r',
-        'border-gray-200 dark:border-gray-800 transition-[width,transform] duration-300 ease-in-out',
-        isExpanded || isMobileOpen || isHovered ? 'w-[280px]' : 'w-20',
+        'bg-gradient-to-b from-blue-200 to-blue-700',
+        'transition-[width,transform] duration-300 ease-in-out',
+        isExpanded || isMobileOpen || isHovered ? 'w-64' : 'w-16',
         isMobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0',
-        !isExpanded && !isMobileOpen && 'lg:hover:shadow-2xl lg:hover:ring-1 lg:hover:ring-black/5 dark:lg:hover:ring-white/10',
       ].join(' ')}
       onMouseEnter={() => !isExpanded && setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* logo */}
-      <div className={['flex items-center py-6 transition-all duration-300', !isExpanded && !isHovered ? 'justify-center' : 'px-6'].join(' ')}>
+      {/* Logo */}
+      <div
+        className={[
+          'flex items-center py-6 transition-all',
+          !isExpanded && !isHovered ? 'justify-center' : 'px-6',
+        ].join(' ')}
+      >
         <Link to="/">
           {isExpanded || isHovered || isMobileOpen ? (
-            <>
-              <img src={ceylon} alt="Logo" className="dark:hidden w-36" />
-              <img src={ceylon} alt="Logo" className="hidden dark:block w-36" />
-            </>
+            <img src={ceylon} alt="CeyBank Logo" className="w-32 h-auto" />
           ) : (
-            <img src={ceylon} alt="Logo" className="w-8" />
+            <img src={ceylon} alt="Logo" className="w-8 h-auto" />
           )}
         </Link>
       </div>
 
-      {/* menu */}
-      <div className="flex-1 overflow-y-auto no-scrollbar px-1 pb-6">
-        <nav className="space-y-6">
-          {/* main */}
-          <SectionLabel open={isExpanded || isHovered || isMobileOpen} label="Menu" />
-          {renderMenu(navItems, 'main')}
+      {/* Menu */}
+       <div className="flex-1 overflow-y-auto no-scrollbar px-2">
+        <h2
+          className={[
+            'text-xs font-semibold uppercase text-white mb-2',
+            isExpanded || isHovered ? 'pl-4' : 'flex justify-center',
+          ].join(' ')}
+        >
+          Menu
+        </h2>
+        {renderMenu(navItems, 'main')}
 
-          <hr className="border-dashed border-gray-200 dark:border-gray-700 my-3" />
+        <hr className="border-yellow-600 my-4 mx-2" />
 
-          {/* others */}
-          <SectionLabel open={isExpanded || isHovered || isMobileOpen} label="Others" />
-          {renderMenu(othersItems, 'others')}
-        </nav>
+        <h2
+          className={[
+            'text-xs font-semibold uppercase text-white mb-2',
+            isExpanded || isHovered ? 'pl-4' : 'flex justify-center',
+          ].join(' ')}
+        >
+          Others
+        </h2>
+        {renderMenu(othersItems, 'others')}
       </div>
 
-      {/* optional widget */}
       {(isExpanded || isHovered || isMobileOpen) && <SidebarWidget />}
     </aside>
   );
 };
-
-/* ───── small helper for section headings ───── */
-const SectionLabel = ({ open, label }) => (
-  <h2
-    className={[
-      'text-[11px] tracking-widest uppercase font-semibold',
-      'text-gray-400 dark:text-gray-500',
-      open ? 'pl-3 mb-2' : 'flex justify-center mb-2',
-    ].join(' ')}
-  >
-    {open ? label : <MoreHorizontal size={18} />}
-  </h2>
-);
 
 export default AppSidebar;
