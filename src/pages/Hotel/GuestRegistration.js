@@ -1074,6 +1074,7 @@ const GuestRegistration = () => {
                       selectsStart
                       startDate={inDate}
                       endDate={outDate}
+                      minDate={today} 
                       dateFormat="dd/MM/yyyy"
                     />
                   </div>
@@ -1093,7 +1094,7 @@ const GuestRegistration = () => {
                       selectsEnd
                       startDate={inDate}
                       endDate={outDate}
-                      minDate={inDate}
+                      minDate={addDays(inDate, 1)}
                       dateFormat="dd/MM/yyyy"
                     />
                   </div>
