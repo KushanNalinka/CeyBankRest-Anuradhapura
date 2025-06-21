@@ -1198,7 +1198,7 @@ const CartTab = () => {
           />
         </div>
 
-        <div className="grid grid-cols-1 p-3">
+        {/* <div className="grid grid-cols-1 p-3">
           <button
             className={`${
               confirmed ? 'bg-[#FFC10C] cursor-pointer' : 'bg-gray-400 cursor-not-allowed'
@@ -1208,7 +1208,7 @@ const CartTab = () => {
           >
             Place Meal Order
           </button>
-        </div>
+        </div> */}
       </div>
 
       {/* ─────────── Confirmation popup ─────────── */}
