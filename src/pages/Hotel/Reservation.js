@@ -298,7 +298,7 @@ const ReservationTable = () => {
         <table className="min-w-[1200px] w-full text-sm border-collapse">
           <thead className="bg-[#E3E6F6] text-[#28245F]">
             <tr>
-              <th className="py-2 px-3 text-left">🆔 Reservation ID</th>
+              <th className="py-2 px-3 text-left">🆔  ID</th>
               <th className="py-2 px-3 text-left">👤 Customer</th>
               <th className="py-2 px-3">🪪 NIC / Passport</th>
               <th className="py-2 px-3">📆 In Date</th>
