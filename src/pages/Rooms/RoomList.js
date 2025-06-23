@@ -185,19 +185,18 @@ import { FaPlus, FaEdit, FaTrash } from 'react-icons/fa';
 import CreateRoom from './CreateRoom';
 import EditRoom from './EditRoom';
 
-const API_URL = process.env.REACT_APP_API_URL;   // build-time constant
+const API_URL = process.env.REACT_APP_API_URL;
 
 export default function RoomList() {
-  const [rooms, setRooms]               = useState([]);
-  const [loading, setLoading]           = useState(true);
-  const [message, setMessage]           = useState('');
-  const [showCreate, setShowCreate]     = useState(false);
-  const [editRoom, setEditRoom]         = useState(null);
+  const [rooms, setRooms] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [message, setMessage] = useState('');
+  const [showCreate, setShowCreate] = useState(false);
+  const [editRoom, setEditRoom] = useState(null);
 
-  const [currentPage, setCurrentPage]   = useState(1);
-  const roomsPerPage                    = 5;
+  const [currentPage, setCurrentPage] = useState(1);
+  const roomsPerPage = 10;
 
-  /* ────────────────── fetch helper ────────────────── */
   const fetchRooms = useCallback(async () => {
     setLoading(true);
     setMessage('');
@@ -211,7 +210,6 @@ export default function RoomList() {
     }
   }, []);
 
-  /* ────────────────── delete helper ────────────────── */
   const handleDelete = async (roomNo) => {
     setMessage('');
     try {
@@ -223,28 +221,18 @@ export default function RoomList() {
     }
   };
 
-  /* ────────────────── initial load ────────────────── */
   useEffect(() => {
     fetchRooms();
   }, [fetchRooms]);
 
-  /* ────────────────── pagination maths ────────────────── */
-  const totalPages   = Math.ceil(rooms.length / roomsPerPage);
-  const indexOfLast  = currentPage * roomsPerPage;
+  const indexOfLast = currentPage * roomsPerPage;
   const indexOfFirst = indexOfLast - roomsPerPage;
   const currentRooms = rooms.slice(indexOfFirst, indexOfLast);
+  const totalPages = Math.ceil(rooms.length / roomsPerPage);
 
-  /* Reset to the last valid page if we deleted items */
-  useEffect(() => {
-    if (currentPage > totalPages && totalPages !== 0) {
-      setCurrentPage(totalPages);
-    }
-  }, [rooms, currentPage, totalPages]);
-
-  /* ────────────────── UI ────────────────── */
   return (
     <div className="min-h-screen bg-gray-100 p-8">
-      <div className="max-w-3xl mx-auto">
+      <div className="max-w-4xl mx-auto">
         {message && (
           <div className="mb-4 p-3 bg-blue-100 border border-blue-300 text-blue-800 rounded">
             {message}
@@ -266,7 +254,6 @@ export default function RoomList() {
             <p>Loading…</p>
           ) : (
             <>
-              {/* table headings */}
               <div className="grid grid-cols-4 gap-4 py-2 border-b font-semibold text-gray-600">
                 <span>Room&nbsp;No</span>
                 <span>Room&nbsp;Type</span>
@@ -281,9 +268,7 @@ export default function RoomList() {
                     className="grid grid-cols-4 gap-4 py-3 border-b items-center hover:bg-gray-50"
                   >
                     <span>{r.roomNo}</span>
-
                     <span>{r.roomType?.name ?? '-'}</span>
-
                     <span
                       className={
                         r.status === 'available'
@@ -293,7 +278,6 @@ export default function RoomList() {
                     >
                       {r.status}
                     </span>
-
                     <span className="flex justify-end space-x-2">
                       <button
                         className="p-1 text-blue-600 hover:text-blue-800"
@@ -335,7 +319,7 @@ export default function RoomList() {
         </div>
       </div>
 
-      {/* modals */}
+      {/* Modals */}
       <CreateRoom
         isOpen={showCreate}
         onClose={() => {
