@@ -109,12 +109,16 @@ const BillsPage = () => {
                   <span>Room No</span>
                   <span>Room Type</span>
                   <span className="text-right">Rate Per Night</span>
+                  <span className="text-right">Total Room Charges</span>
                 </div>
                 {roomChargeBill.rooms.map((room, idx) => (
                   <div key={idx} className="grid grid-cols-3 py-2 text-sm text-gray-700 border-b last:border-none">
                     <span>{room.roomNo}</span>
                     <span>{room.roomType}</span>
                     <span className="text-right">Rs {room.ratePerNight.toLocaleString()}</span>
+                    <span className="text-right">
+                      Rs {(room.ratePerNight * roomChargeBill.nights).toLocaleString()}
+                    </span>
                   </div>
                 ))}
               </div>
