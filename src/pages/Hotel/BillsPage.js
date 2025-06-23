@@ -95,7 +95,7 @@ const BillsPage = () => {
                 Room Total: Rs {roomChargeBill.roomTotal.toLocaleString()}
               </div>
             </div>
-            <button
+            {/* <button
               onClick={() => setRoomChargeExpanded(!roomChargeExpanded)}
               className="text-sm bg-[#24256D] text-white px-4 py-1 rounded hover:bg-[#1c1d50]"
             >
@@ -115,6 +115,35 @@ const BillsPage = () => {
                     <span>{room.roomNo}</span>
                     <span>{room.roomType}</span>
                     <span className="text-right">Rs {room.ratePerNight.toLocaleString()}</span>
+                  </div>
+                ))}
+              </div>
+            )} */}
+
+             <button
+              onClick={() => setRoomChargeExpanded(!roomChargeExpanded)}
+              className="text-sm bg-[#24256D] text-white px-4 py-1 rounded hover:bg-[#1c1d50]"
+            >
+              {roomChargeExpanded ? 'Hide Room Charges' : 'View Room Charges'}
+            </button>
+
+            {roomChargeExpanded && (
+              <div className="mt-4 bg-[#F9FAFB] p-4 rounded-lg border">
+                <h4 className="font-semibold mb-3 text-[#28245F]">🛏️ Room Details</h4>
+                <div className="grid grid-cols-4 font-semibold text-sm text-gray-600 border-b pb-2 mb-2">
+                  <span>Room No</span>
+                  <span>Room Type</span>
+                  <span className="text-right">Rate Per Night</span>
+                  <span className="text-right">Total Room Charges</span>
+                </div>
+                {roomChargeBill.rooms.map((room, idx) => (
+                  <div key={idx} className="grid grid-cols-4 py-2 text-sm text-gray-700 border-b last:border-none">
+                    <span>{room.roomNo}</span>
+                    <span>{room.roomType}</span>
+                    <span className="text-right">Rs {room.ratePerNight.toLocaleString()}</span>
+                    <span className="text-right">
+                      Rs {(room.ratePerNight * roomChargeBill.nights).toLocaleString()}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -218,7 +247,7 @@ const BillsPage = () => {
         </div>
 
         {/* Final Bill Section */}
-        {finalBill && (
+        {/* {finalBill && (
           <div className="bg-[#E3E6F6] mt-10 p-6 rounded-xl shadow-lg">
             <h3 className="text-2xl font-bold text-[#24256D] mb-4">💰 Final Bill Summary</h3>
             <div className="grid grid-cols-2 gap-4 text-base text-gray-700">
@@ -231,7 +260,67 @@ const BillsPage = () => {
               </div>
             </div>
           </div>
-        )}
+        )} */}
+
+        {/* Final Bill Section */}
+{finalBill && (
+  <div className="bg-[#E3E6F6] mt-10 p-6 rounded-xl shadow-lg">
+    <h3 className="text-2xl font-bold text-[#24256D] mb-4">💰 Final Bill Summary</h3>
+
+    <div className="grid grid-cols-2 gap-4 text-base text-gray-700 mb-4">
+      <div><strong>Room Charges:</strong> Rs {finalBill.roomCharges.toLocaleString()}</div>
+      <div><strong>Food Total:</strong> Rs {finalBill.foodTotal.toLocaleString()}</div>
+      <div><strong>Beverage Total:</strong> Rs {finalBill.beverageTotal.toLocaleString()}</div>
+      <div><strong>Advance Paid:</strong> Rs {finalBill.advance.toLocaleString()}</div>
+    </div>
+
+    {/* Additional Fields */}
+    <div className="grid grid-cols-2 gap-4 mb-4">
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">➕ Additional Charges</label>
+        <input
+          type="number"
+          min={0}
+          defaultValue={0}
+          onChange={(e) => setAdditional(+e.target.value || 0)}
+          className="w-full p-2 border rounded"
+        />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">➖ Discount</label>
+        <input
+          type="number"
+          min={0}
+          defaultValue={0}
+          onChange={(e) => setDiscount(+e.target.value || 0)}
+          className="w-full p-2 border rounded"
+        />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">📄 Bill State</label>
+        <select
+          value={billState}
+          onChange={(e) => setBillState(e.target.value)}
+          className="w-full p-2 border rounded"
+        >
+          <option value="Not Closed">Not Closed</option>
+          <option value="Closed">Closed</option>
+        </select>
+      </div>
+    </div>
+
+    <div className="col-span-2 mt-4 text-lg font-bold text-[#28245F] border-t pt-2">
+      Final Total:&nbsp;
+      Rs {(
+        finalBill.finalTotal +
+        (additional || 0) -
+        (discount || 0)
+      ).toLocaleString()}
+      &nbsp;({billState})
+    </div>
+  </div>
+)}
+
       </div>
 
       <div className="mt-8">
