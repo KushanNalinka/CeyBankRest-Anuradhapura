@@ -305,9 +305,9 @@ const ReservationTable = () => {
               <th className="py-2 px-3">📆 Out Date</th>
               <th className="py-2 px-3">📅 Days</th>
               <th className="py-2 px-3">👥 Guests</th>
-              <th className="py-2 px-3">💰 Total (LKR)</th>
+              {/* <th className="py-2 px-3">💰 Total (LKR)</th>
               <th className="py-2 px-3">💸 Advance</th>
-              <th className="py-2 px-3">💳 Payment</th>
+              <th className="py-2 px-3">💳 Payment</th> */}
               <th className="py-2 px-3">⚙️ Actions</th>
             </tr>
           </thead>
@@ -322,9 +322,9 @@ const ReservationTable = () => {
                 <td className="py-2 px-3">{r.outDate}</td>
                 <td className="py-2 px-3 text-center">{r.days}</td>
                 <td className="py-2 px-3 text-center">{r.noOfGuests}</td>
-                <td className="py-2 px-3 text-right">{r.total.toLocaleString()}</td>
+                {/* <td className="py-2 px-3 text-right">{r.total.toLocaleString()}</td>
                 <td className="py-2 px-3 text-right">{r.advance.toLocaleString()}</td>
-                <td className="py-2 px-3">{r.modeOfPayment}</td>
+                <td className="py-2 px-3">{r.modeOfPayment}</td> */}
                 <td className="py-2 px-3 text-center">
                   <button
                     onClick={() => navigate(`/bills/${r.reservationId}`)}
