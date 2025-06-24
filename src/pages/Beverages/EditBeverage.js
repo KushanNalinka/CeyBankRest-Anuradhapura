@@ -376,7 +376,7 @@ export default function EditBeverage(props) {
   const [availableForMeals, setAvailableForMeals] = useState(initial.availableForMeals);
   const [error, setError] = useState('');
 
-  const meals = ['BREAKFAST', 'LUNCH', 'DINNER'];
+  const meals = ['BREAKFAST', 'LUNCH', 'DINNER','ALACARTE'];
   const { openPopup, closePopup } = usePopup();
   const API_URL = process.env.REACT_APP_API_URL;
 

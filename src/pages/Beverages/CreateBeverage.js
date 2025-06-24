@@ -327,7 +327,7 @@ export default function CreateBeverage(props) {
   const [error, setError] = useState('');
   const API_URL = process.env.REACT_APP_API_URL;
 
-  const meals = ['BREAKFAST', 'LUNCH', 'DINNER'];
+  const meals = ['BREAKFAST', 'LUNCH', 'DINNER', 'ALACARTE'];
   const { openPopup, closePopup } = usePopup();
 
   useEffect(() => {
