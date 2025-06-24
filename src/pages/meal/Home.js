@@ -44,7 +44,7 @@ const Home = () => {
       case 'Dinner':
         return dinner;
         
-      case 'Aalacarte':
+      case 'Alacarte':
         return AlaCarte; // Assuming aalacart uses breakfast image, change as needed
       default:
         return breakfast; // Default image if meal doesn't match any case

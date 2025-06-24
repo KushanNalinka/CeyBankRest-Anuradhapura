@@ -67,7 +67,7 @@ const Sidebar = ({ setSelectedCategory }) => {
       { name: 'Indian', icon: FaHotdog },
       { name: 'Chineese', icon: FaHotdog },
     ];
-  } else if (meal === 'Aalacarte') {
+  } else if (meal === 'Alacarte') {
      categories = [
       { name: 'Pizza', icon: FaPizzaSlice },
       { name: 'Fruits', icon: FaAppleAlt },
