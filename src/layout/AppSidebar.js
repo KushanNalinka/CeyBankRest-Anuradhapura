@@ -877,7 +877,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router';
-import ceylon from '../assets/images/cey.png';
+import ceylon from '../assets/images/cey1.png';
 
 /* ─ Icons ─ */
 import { Grid, Calendar, UserCircle, Plug, ChevronDown, MoreHorizontal } from 'lucide-react';
