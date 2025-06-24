@@ -86,7 +86,7 @@ const BillsPage = () => {
 
       <div ref={printRef}>
         {/* Room Charges */}
-        {roomChargeBill && (
+        {/* {roomChargeBill && (
           <div className="mb-8 bg-white border shadow rounded-xl p-6">
             <div className="flex justify-between items-center mb-3">
               <div className="text-sm text-gray-700">
@@ -119,6 +119,50 @@ const BillsPage = () => {
                     <span>{room.roomNo}</span>
                     <span>{room.roomType}</span>
                     <span className="text-right">Rs {room.ratePerNight.toLocaleString()}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )} */}
+
+         {roomChargeBill && (
+          <div className="mb-8 bg-white border shadow rounded-xl p-6">
+            <div className="flex justify-between items-center mb-3">
+              <div className="text-sm text-gray-700">
+                <p><strong>Reservation ID:</strong> {roomChargeBill.reservationId}</p>
+                <p><strong>In:</strong> {roomChargeBill.inDate}</p>
+                <p><strong>Out:</strong> {roomChargeBill.outDate}</p>
+                <p><strong>Nights:</strong> {roomChargeBill.nights}</p>
+              </div>
+              <div className="text-right font-bold text-lg text-[#28245F]">
+                Room Total: Rs {roomChargeBill.roomTotal.toLocaleString()}
+              </div>
+            </div>
+            <button
+              onClick={() => setRoomChargeExpanded(!roomChargeExpanded)}
+              className="text-sm bg-[#24256D] text-white px-4 py-1 rounded hover:bg-[#1c1d50]"
+            >
+              {roomChargeExpanded ? 'Hide Room Charges' : 'View Room Charges'}
+            </button>
+
+            {roomChargeExpanded && (
+              <div className="mt-4 bg-[#F9FAFB] p-4 rounded-lg border">
+                <h4 className="font-semibold mb-3 text-[#28245F]">🛏️ Room Details</h4>
+                <div className="grid grid-cols-4 font-semibold text-sm text-gray-600 border-b pb-2 mb-2">
+                  <span>Room No</span>
+                  <span>Room Type</span>
+                  <span className="text-right">Rate Per Night</span>
+                  <span className="text-right">Total Room Charges</span>
+                </div>
+                {roomChargeBill.rooms.map((room, idx) => (
+                  <div key={idx} className="grid grid-cols-4 py-2 text-sm text-gray-700 border-b last:border-none">
+                    <span>{room.roomNo}</span>
+                    <span>{room.roomType}</span>
+                    <span className="text-right">Rs {room.ratePerNight.toLocaleString()}</span>
+                    <span className="text-right">
+                      Rs {(room.ratePerNight * roomChargeBill.nights).toLocaleString()}
+                    </span>
                   </div>
                 ))}
               </div>
