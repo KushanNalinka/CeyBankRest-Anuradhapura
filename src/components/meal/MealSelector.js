@@ -50,7 +50,7 @@ const MealSelector = () => {
         <div className="flex flex-col items-center">
           <div
             className="meal-card bg-white w-40 h-40 rounded-full flex items-center justify-center cursor-pointer transform transition-transform duration-200 shadow-xl hover:bg-yellow-300 active:bg-yellow-500 group"
-            onClick={() => handleMealClick('Aalacart')}
+            onClick={() => handleMealClick('Aalacarte')}
           >
             <IoFastFoodSharp size={100} className="text-[#28245F] group-hover:text-white" />
           </div>

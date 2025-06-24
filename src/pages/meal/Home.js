@@ -8,6 +8,7 @@ import { useOutletContext } from 'react-router-dom';
 import breakfast from '../../assets/images/breakfast.png';
 import lunch from '../../assets/images/lunch.png';
 import dinner from '../../assets/images/dinner.png';
+import AlaCarte from '../../assets/images/alacarte.png'; // Assuming you have an image for Ala Carte
 
 
 const Home = () => {
@@ -42,6 +43,9 @@ const Home = () => {
         return lunch;
       case 'Dinner':
         return dinner;
+        
+      case 'Aalacarte':
+        return AlaCarte; // Assuming aalacart uses breakfast image, change as needed
       default:
         return breakfast; // Default image if meal doesn't match any case
     }
