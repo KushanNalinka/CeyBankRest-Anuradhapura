@@ -43,7 +43,7 @@ const Home = () => {
       case 'Dinner':
         return dinner;
       default:
-        return breakfast; // Default image if meal doesn't match any case
+        return null; // Default image if meal doesn't match any case
     }
   };
 

@@ -67,6 +67,25 @@ const Sidebar = ({ setSelectedCategory }) => {
       { name: 'Indian', icon: FaHotdog },
       { name: 'Chineese', icon: FaHotdog },
     ];
+  } else if (meal === 'Aalacart') {
+     categories = [
+      { name: 'Pizza', icon: FaPizzaSlice },
+      { name: 'Fruits', icon: FaAppleAlt },
+      { name: 'Burgers', icon: FaHamburger },
+      { name: 'Buns', icon: FaHotdog },
+      { name: 'Fish', icon: FaFish },
+      { name: 'Snacks', icon: FaDrumstickBite },
+      { name: 'Roti', icon: FaHotdog },
+      { name: 'Indian', icon: FaHotdog },
+      { name: 'Chineese', icon: FaHotdog },
+      
+      { name: 'Vegie', icon: FaCarrot },
+      
+    ];
+
+
+
+
   }
 
   const handleClick = (categoryName) => {
