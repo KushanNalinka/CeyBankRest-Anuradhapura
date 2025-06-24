@@ -18,7 +18,7 @@ export default function CreateFood(props) {
   const [availableForMeals, setAvailableForMeals] = useState([]);
   const [error, setError] = useState('');
 
-  const meals = ['BREAKFAST', 'LUNCH', 'DINNER'];
+  const meals = ['BREAKFAST', 'LUNCH', 'DINNER', 'ALACARTE'];
 
   const { openPopup, closePopup } = usePopup();
   const API_URL = process.env.REACT_APP_API_URL;
