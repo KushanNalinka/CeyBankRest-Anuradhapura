@@ -5,7 +5,7 @@ import ProductCart from '../../components/beverages/ProductCart';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { useOutletContext } from 'react-router-dom';
-import ceybank from '../../assets/images/beverages.png';
+import ceybank from '../../assets/images/bev.png';
 
 
 
