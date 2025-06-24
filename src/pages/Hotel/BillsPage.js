@@ -41,14 +41,50 @@ const BillsPage = () => {
     fetchBills();
   }, [reservationId]);
 
+  // const handlePrint = () => {
+  //   const printContents = printRef.current.innerHTML;
+  //   const originalContents = document.body.innerHTML;
+  //   document.body.innerHTML = printContents;
+  //   window.print();
+  //   document.body.innerHTML = originalContents;
+  //   window.location.reload();
+  // };
+
+
   const handlePrint = () => {
-    const printContents = printRef.current.innerHTML;
-    const originalContents = document.body.innerHTML;
-    document.body.innerHTML = printContents;
-    window.print();
-    document.body.innerHTML = originalContents;
-    window.location.reload();
-  };
+  const printWindow = window.open('', '_blank', 'width=600,height=800');
+  printWindow.document.write(`
+    <html>
+      <head>
+        <title>Print Bill</title>
+        <style>
+          body {
+            font-family: monospace;
+            font-size: 13px;
+            padding: 20px;
+            white-space: pre-wrap;
+          }
+          hr {
+            border: none;
+            border-top: 1px dashed #000;
+            margin: 10px 0;
+          }
+          p {
+            margin: 4px 0;
+          }
+        </style>
+      </head>
+      <body>
+        ${printRef.current.innerHTML}
+      </body>
+    </html>
+  `);
+  printWindow.document.close();
+  printWindow.focus();
+  printWindow.print();
+  printWindow.close();
+};
+
 
   const handleViewItems = async (billId, type, roomIndex) => {
     try {
@@ -350,6 +386,72 @@ const BillsPage = () => {
           ← Back to Reservations
         </Link>
       </div>
+
+
+{/* Hidden Printable Bill Format */}
+<div ref={printRef} style={{ display: 'none' }}>
+  <div style={{ fontFamily: 'monospace', fontSize: '13px', padding: '20px' }}>
+    <h3 style={{ textAlign: 'center', fontWeight: 'bold', fontSize: '16px' }}>HOTEL FINAL BILL</h3>
+    <p>Reservation ID: #{roomChargeBill?.reservationId}</p>
+    <p>Customer: {roomChargeBill?.customerName}</p>
+    <p>NIC: {roomChargeBill?.nicPassportPf}</p>
+    <p>In: {roomChargeBill?.inDate}</p>
+    <p>Out: {roomChargeBill?.outDate}</p>
+    <p>Nights: {roomChargeBill?.nights}</p>
+    <hr />
+
+    {/* Room Details */}
+    {roomChargeBill?.rooms.map((room, i) => (
+      <div key={i}>
+        <p>Room {room.roomNo} - {room.roomType}</p>
+        <p>Rate: Rs {room.ratePerNight.toLocaleString()}</p>
+        <p>Total: Rs {(room.ratePerNight * roomChargeBill.nights).toLocaleString()}</p>
+        <hr />
+      </div>
+    ))}
+
+    {/* Food & Beverage Bills */}
+    {roomBills.map((room, i) => (
+      <div key={i}>
+        <p>--- Room {room.roomNo} ---</p>
+
+        {room.foodBills.map((bill) => (
+          <div key={bill.billId}>
+            <p>🍽 Food #{bill.billId} ({bill.date})</p>
+            {bill.items?.map((item, j) => (
+              <p key={j}>{item.foodName} x {item.portions} = Rs {item.total.toFixed(2)}</p>
+            ))}
+          </div>
+        ))}
+
+        {room.beverageBills.map((bill) => (
+          <div key={bill.billId}>
+            <p>🍷 Beverage #{bill.billId} ({bill.date})</p>
+            {bill.items?.map((item, j) => (
+              <p key={j}>{item.beverageName} x {item.bottlesOrGlasses} = Rs {item.total.toFixed(2)}</p>
+            ))}
+          </div>
+        ))}
+
+        <hr />
+      </div>
+    ))}
+
+    {/* Final Summary */}
+    <p>Room Charges: Rs {finalBill?.roomCharges.toLocaleString()}</p>
+    <p>Food Total: Rs {finalBill?.foodTotal.toLocaleString()}</p>
+    <p>Beverage Total: Rs {finalBill?.beverageTotal.toLocaleString()}</p>
+    <p>Advance Paid: Rs {finalBill?.advance.toLocaleString()}</p>
+    <p>Additional: Rs {additional}</p>
+    <p>Discount: Rs {discount}</p>
+    <p style={{ fontWeight: 'bold' }}>
+      FINAL TOTAL: Rs {(finalBill?.finalTotal + additional - discount).toLocaleString()} ({billState})
+    </p>
+    <p style={{ textAlign: 'center', marginTop: '20px' }}>Thank you for your stay!</p>
+  </div>
+</div>
+
+
     </div>
   );
 };
