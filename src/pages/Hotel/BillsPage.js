@@ -8,6 +8,10 @@ const BillsPage = () => {
   const { reservationId } = useParams();
   const [roomBills, setRoomBills] = useState([]);
   const [finalBill, setFinalBill] = useState(null);
+  const [additional, setAdditional] = useState(0);
+  const [discount, setDiscount] = useState(0);
+  const [billState, setBillState] = useState('Not Closed');
+
   const [roomChargeBill, setRoomChargeBill] = useState(null);
   const [roomChargeExpanded, setRoomChargeExpanded] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -218,7 +222,7 @@ const BillsPage = () => {
         </div>
 
         {/* Final Bill Section */}
-        {finalBill && (
+        {/* {finalBill && (
           <div className="bg-[#E3E6F6] mt-10 p-6 rounded-xl shadow-lg">
             <h3 className="text-2xl font-bold text-[#24256D] mb-4">💰 Final Bill Summary</h3>
             <div className="grid grid-cols-2 gap-4 text-base text-gray-700">
@@ -231,7 +235,68 @@ const BillsPage = () => {
               </div>
             </div>
           </div>
-        )}
+        )} */}
+
+        {/* Final Bill Section */}
+{finalBill && (
+  <div className="bg-[#E3E6F6] mt-10 p-6 rounded-xl shadow-lg">
+    <h3 className="text-2xl font-bold text-[#24256D] mb-4">💰 Final Bill Summary</h3>
+
+    <div className="grid grid-cols-2 gap-4 text-base text-gray-700 mb-4">
+      <div><strong>Room Charges:</strong> Rs {finalBill.roomCharges.toLocaleString()}</div>
+      <div><strong>Food Total:</strong> Rs {finalBill.foodTotal.toLocaleString()}</div>
+      <div><strong>Beverage Total:</strong> Rs {finalBill.beverageTotal.toLocaleString()}</div>
+      <div><strong>Advance Paid:</strong> Rs {finalBill.advance.toLocaleString()}</div>
+    </div>
+
+    {/* Additional Fields */}
+    <div className="grid grid-cols-2 gap-4 mb-4">
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">➕ Additional Charges</label>
+        <input
+          type="number"
+          min={0}
+          defaultValue={0}
+          onChange={(e) => setAdditional(+e.target.value || 0)}
+          className="w-full p-2 border rounded"
+        />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">➖ Discount</label>
+        <input
+          type="number"
+          min={0}
+          defaultValue={0}
+          onChange={(e) => setDiscount(+e.target.value || 0)}
+          className="w-full p-2 border rounded"
+        />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">📄 Bill State</label>
+        <select
+          value={billState}
+          onChange={(e) => setBillState(e.target.value)}
+          className="w-full p-2 border rounded"
+        >
+          <option value="Not Closed">Not Closed</option>
+          <option value="Closed">Closed</option>
+        </select>
+      </div>
+    </div>
+
+    <div className="col-span-2 mt-4 text-lg font-bold text-[#28245F] border-t pt-2">
+      Final Total:&nbsp;
+      Rs {(
+        finalBill.finalTotal +
+        (additional || 0) -
+        (discount || 0)
+      ).toLocaleString()}
+      &nbsp;({billState})
+    </div>
+  </div>
+)}
+
+
       </div>
 
       <div className="mt-8">
