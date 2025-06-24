@@ -550,6 +550,232 @@
 
 
 
+// import React from 'react';
+// import { Home, Bed, Check, X } from 'lucide-react';
+
+// const RoomChart = ({
+//   dateRange,
+//   roomData,
+//   roomDetails,
+//   isLoadingDetails,
+//   selectedRoomDates,
+//   onToggleRoomDate,
+//   onToggleRoom,
+//   isRoomDateSelected,
+//   isRoomFullySelected
+// }) => {
+  
+//   // Format date for display
+//   const formatDateHeader = (dateStr) => {
+//     const date = new Date(dateStr);
+//     const day = date.toLocaleDateString('en-US', { weekday: 'short' });
+//     const dayNum = date.getDate();
+//     const month = date.toLocaleDateString('en-US', { month: 'short' });
+//     return { day, dayNum, month };
+//   };
+
+//   // Check if room is available for specific date
+//   const isRoomAvailable = (roomNo, date) => {
+//     const room = roomData.find(r => r.roomNo === roomNo);
+//     return room && room.availableDates.includes(date);
+//   };
+
+//   // Get cell class based on availability and selection
+//   const getCellClass = (roomNo, date, isAvailable) => {
+//     const baseClass = "h-12 border border-gray-200 cursor-pointer transition-all duration-150 flex items-center justify-center text-sm font-medium";
+    
+//     if (!isAvailable) {
+//       return `${baseClass} bg-red-100 text-red-700 cursor-not-allowed`;
+//     }
+    
+//     if (isRoomDateSelected(roomNo, date)) {
+//       return `${baseClass} bg-green-400 text-white hover:bg-green-500`;
+//     }
+    
+//     return `${baseClass} bg-green-100 text-green-700 hover:bg-green-200`;
+//   };
+
+//   // Handle cell click
+//   const handleCellClick = (roomNo, date) => {
+//     if (isRoomAvailable(roomNo, date)) {
+//       onToggleRoomDate(roomNo, date);
+//     }
+//   };
+
+//   // Get room rate safely
+//   const getRoomRate = (roomNo) => {
+//     const details = roomDetails[roomNo];
+//     if (!details || !details.roomType) return 'N/A';
+//     return details.roomType.currentRate || 'N/A';
+//   };
+
+//   // Get room type safely
+//   const getRoomType = (roomNo) => {
+//     const details = roomDetails[roomNo];
+//     if (!details || !details.roomType) return 'Unknown';
+//     return details.roomType.name || 'Unknown';
+//   };
+
+//   if (isLoadingDetails) {
+//     return (
+//       <div className="h-64 flex items-center justify-center">
+//         <div className="flex flex-col items-center gap-3">
+//           <div className="w-8 h-8 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
+//           <span className="text-gray-500">Loading room details...</span>
+//         </div>
+//       </div>
+//     );
+//   }
+
+//   if (!roomData || roomData.length === 0) {
+//     return (
+//       <div className="h-64 flex items-center justify-center">
+//         <div className="text-center">
+//           <Home className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+//           <p className="text-gray-500">No rooms available for the selected dates</p>
+//         </div>
+//       </div>
+//     );
+//   }
+
+//   return (
+//     <div className="overflow-x-auto">
+//       <div className="min-w-full">
+//         {/* Table Header */}
+//         <div className="grid grid-cols-[200px_150px_100px_repeat(auto-fit,_120px)] gap-0 bg-gray-50 border-b border-gray-200">
+//           {/* Room Number Column Header */}
+//           <div className="h-16 flex items-center justify-center bg-gray-100 border-r border-gray-200 font-semibold text-gray-700">
+//             <div className="flex items-center gap-2">
+//               <Home className="h-4 w-4" />
+//               Room Number
+//             </div>
+//           </div>
+          
+//           {/* Room Type Column Header */}
+//           <div className="h-16 flex items-center justify-center bg-gray-100 border-r border-gray-200 font-semibold text-gray-700">
+//             <div className="flex items-center gap-2">
+//               <Bed className="h-4 w-4" />
+//               Room Type
+//             </div>
+//           </div>
+          
+//           {/* Rate Column Header */}
+//           <div className="h-16 flex items-center justify-center bg-gray-100 border-r border-gray-200 font-semibold text-gray-700">
+//             Rate
+//           </div>
+          
+//           {/* Date Headers */}
+//           {dateRange.map(date => {
+//             const { day, dayNum, month } = formatDateHeader(date);
+//             return (
+//               <div key={date} className="h-16 flex flex-col items-center justify-center bg-gray-100 border-r border-gray-200 text-center">
+//                 <div className="text-xs text-gray-500 font-medium">{day}</div>
+//                 <div className="text-lg font-bold text-gray-700">{dayNum}</div>
+//                 <div className="text-xs text-gray-500">{month}</div>
+//               </div>
+//             );
+//           })}
+//         </div>
+
+//         {/* Table Body */}
+//         <div className="bg-white">
+//           {roomData.map((room) => (
+//             <div key={room.roomNo} className="grid grid-cols-[200px_150px_100px_repeat(auto-fit,_120px)] gap-0 border-b border-gray-100 hover:bg-gray-50/50">
+//               {/* Room Number */}
+//               <div className="h-12 flex items-center justify-between px-4 border-r border-gray-200 bg-white">
+//                 <div className="flex items-center gap-2">
+//                   <Home className="h-4 w-4 text-blue-500" />
+//                   <span className="font-medium text-gray-800">Room {room.roomNo}</span>
+//                 </div>
+//                 <button
+//                   onClick={() => onToggleRoom(room.roomNo)}
+//                   className={`p-1 rounded transition-colors ${
+//                     isRoomFullySelected(room.roomNo)
+//                       ? 'text-green-600 hover:text-green-700'
+//                       : 'text-gray-400 hover:text-gray-600'
+//                   }`}
+//                   title={isRoomFullySelected(room.roomNo) ? 'Deselect all dates' : 'Select all available dates'}
+//                 >
+//                   <Check className="h-4 w-4" />
+//                 </button>
+//               </div>
+              
+//               {/* Room Type */}
+//               <div className="h-12 flex items-center justify-center px-3 border-r border-gray-200 bg-white text-sm text-gray-600">
+//                 {getRoomType(room.roomNo)}
+//               </div>
+              
+//               {/* Rate */}
+//               <div className="h-12 flex items-center justify-center px-2 border-r border-gray-200 bg-white text-sm font-medium text-gray-800">
+//                 {getRoomRate(room.roomNo)}
+//               </div>
+              
+//               {/* Date Cells */}
+//               {dateRange.map(date => {
+//                 const isAvailable = isRoomAvailable(room.roomNo, date);
+//                 const isSelected = isRoomDateSelected(room.roomNo, date);
+                
+//                 return (
+//                   <div
+//                     key={`${room.roomNo}-${date}`}
+//                     className={getCellClass(room.roomNo, date, isAvailable)}
+//                     onClick={() => handleCellClick(room.roomNo, date)}
+//                     title={
+//                       !isAvailable 
+//                         ? 'Not available' 
+//                         : isSelected 
+//                           ? 'Click to deselect' 
+//                           : 'Click to select'
+//                     }
+//                   >
+//                     {!isAvailable ? (
+//                       <X className="h-4 w-4" />
+//                     ) : isSelected ? (
+//                       <Check className="h-4 w-4" />
+//                     ) : (
+//                       <div className="w-4 h-4 rounded border-2 border-current opacity-50"></div>
+//                     )}
+//                   </div>
+//                 );
+//               })}
+//             </div>
+//           ))}
+//         </div>
+//       </div>
+      
+//       {/* Bottom Summary Section */}
+//       {roomData.length > 0 && (
+//         <div className="mt-6 bg-blue-50 p-4 rounded-lg border border-blue-100">
+//           <div className="flex items-center justify-between text-sm">
+//             <div className="flex items-center gap-6">
+//               <div className="flex items-center gap-2">
+//                 <div className="w-3 h-3 bg-green-200 rounded"></div>
+//                 <span className="text-gray-600">Available ({
+//                   roomData.reduce((total, room) => total + room.availableDates.length, 0)
+//                 } slots)</span>
+//               </div>
+//               <div className="flex items-center gap-2">
+//                 <div className="w-3 h-3 bg-red-200 rounded"></div>
+//                 <span className="text-gray-600">Booked</span>
+//               </div>
+//               <div className="flex items-center gap-2">
+//                 <div className="w-3 h-3 bg-green-400 rounded"></div>
+//                 <span className="text-gray-600">Selected ({selectedRoomDates.size} slots)</span>
+//               </div>
+//             </div>
+//             <div className="text-blue-700 font-medium">
+//               {roomData.length} rooms shown
+//             </div>
+//           </div>
+//         </div>
+//       )}
+//     </div>
+//   );
+// };
+
+// export default RoomChart;
+
+
 import React from 'react';
 import { Home, Bed, Check, X } from 'lucide-react';
 
@@ -582,17 +808,17 @@ const RoomChart = ({
 
   // Get cell class based on availability and selection
   const getCellClass = (roomNo, date, isAvailable) => {
-    const baseClass = "h-12 border border-gray-200 cursor-pointer transition-all duration-150 flex items-center justify-center text-sm font-medium";
+    const baseClass = "h-12 border border-white/30 cursor-pointer transition-all duration-300 flex items-center justify-center text-sm font-medium rounded-lg backdrop-blur-sm";
     
     if (!isAvailable) {
-      return `${baseClass} bg-red-100 text-red-700 cursor-not-allowed`;
+      return `${baseClass} bg-gradient-to-r from-red-100/80 to-red-200/60 border-red-200/50 text-red-700 cursor-not-allowed hover:from-red-200/80 hover:to-red-300/60`;
     }
     
     if (isRoomDateSelected(roomNo, date)) {
-      return `${baseClass} bg-green-400 text-white hover:bg-green-500`;
+      return `${baseClass} bg-gradient-to-r from-yellow-400/90 to-yellow-500/80 border-yellow-400/60 text-gray-800 hover:from-yellow-300/90 hover:to-yellow-400/80 shadow-md`;
     }
     
-    return `${baseClass} bg-green-100 text-green-700 hover:bg-green-200`;
+    return `${baseClass} bg-gradient-to-r from-green-100/80 to-green-200/60 border-green-200/50 text-green-700 hover:from-green-200/80 hover:to-green-300/60 hover:shadow-sm`;
   };
 
   // Handle cell click
@@ -619,9 +845,12 @@ const RoomChart = ({
   if (isLoadingDetails) {
     return (
       <div className="h-64 flex items-center justify-center">
-        <div className="flex flex-col items-center gap-3">
-          <div className="w-8 h-8 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
-          <span className="text-gray-500">Loading room details...</span>
+        <div className="flex flex-col items-center gap-4">
+          <div className="relative">
+            <div className="w-10 h-10 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
+            <div className="absolute inset-0 w-10 h-10 border-4 border-transparent border-r-yellow-400 rounded-full animate-spin animation-delay-500"></div>
+          </div>
+          <span className="text-gray-600 font-medium">Loading room details...</span>
         </div>
       </div>
     );
@@ -630,37 +859,44 @@ const RoomChart = ({
   if (!roomData || roomData.length === 0) {
     return (
       <div className="h-64 flex items-center justify-center">
-        <div className="text-center">
-          <Home className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-          <p className="text-gray-500">No rooms available for the selected dates</p>
+        <div className="text-center backdrop-blur-md bg-white/60 p-8 rounded-2xl border border-white/40 shadow-lg">
+          <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <Home className="h-8 w-8 text-white" />
+          </div>
+          <p className="text-gray-600 font-medium">No rooms available for the selected dates</p>
+          <p className="text-gray-500 text-sm mt-1">Please try different dates or room types</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="overflow-x-auto">
-      <div className="min-w-full">
+    <div className="overflow-x-auto p-4">
+      <div className="min-w-full backdrop-blur-md bg-white/60 border border-white/40 rounded-2xl overflow-hidden shadow-xl">
         {/* Table Header */}
-        <div className="grid grid-cols-[200px_150px_100px_repeat(auto-fit,_120px)] gap-0 bg-gray-50 border-b border-gray-200">
+        <div className="grid grid-cols-[200px_150px_100px_repeat(auto-fit,_120px)] gap-1 bg-gradient-to-r from-blue-600 to-blue-700 p-1">
           {/* Room Number Column Header */}
-          <div className="h-16 flex items-center justify-center bg-gray-100 border-r border-gray-200 font-semibold text-gray-700">
+          <div className="h-16 flex items-center justify-center bg-white/20 backdrop-blur-sm rounded-lg font-semibold text-white">
             <div className="flex items-center gap-2">
-              <Home className="h-4 w-4" />
+              <div className="w-6 h-6 bg-yellow-400 rounded-lg flex items-center justify-center">
+                <Home className="h-4 w-4 text-blue-900" />
+              </div>
               Room Number
             </div>
           </div>
           
           {/* Room Type Column Header */}
-          <div className="h-16 flex items-center justify-center bg-gray-100 border-r border-gray-200 font-semibold text-gray-700">
+          <div className="h-16 flex items-center justify-center bg-white/20 backdrop-blur-sm rounded-lg font-semibold text-white">
             <div className="flex items-center gap-2">
-              <Bed className="h-4 w-4" />
+              <div className="w-6 h-6 bg-yellow-400 rounded-lg flex items-center justify-center">
+                <Bed className="h-4 w-4 text-blue-900" />
+              </div>
               Room Type
             </div>
           </div>
           
           {/* Rate Column Header */}
-          <div className="h-16 flex items-center justify-center bg-gray-100 border-r border-gray-200 font-semibold text-gray-700">
+          <div className="h-16 flex items-center justify-center bg-white/20 backdrop-blur-sm rounded-lg font-semibold text-white">
             Rate
           </div>
           
@@ -668,31 +904,33 @@ const RoomChart = ({
           {dateRange.map(date => {
             const { day, dayNum, month } = formatDateHeader(date);
             return (
-              <div key={date} className="h-16 flex flex-col items-center justify-center bg-gray-100 border-r border-gray-200 text-center">
-                <div className="text-xs text-gray-500 font-medium">{day}</div>
-                <div className="text-lg font-bold text-gray-700">{dayNum}</div>
-                <div className="text-xs text-gray-500">{month}</div>
+              <div key={date} className="h-16 flex flex-col items-center justify-center bg-white/20 backdrop-blur-sm rounded-lg text-center">
+                <div className="text-xs text-blue-100 font-medium">{day}</div>
+                <div className="text-lg font-bold text-white">{dayNum}</div>
+                <div className="text-xs text-blue-100">{month}</div>
               </div>
             );
           })}
         </div>
 
         {/* Table Body */}
-        <div className="bg-white">
-          {roomData.map((room) => (
-            <div key={room.roomNo} className="grid grid-cols-[200px_150px_100px_repeat(auto-fit,_120px)] gap-0 border-b border-gray-100 hover:bg-gray-50/50">
+        <div className="bg-white/40 backdrop-blur-sm p-1 space-y-1">
+          {roomData.map((room, index) => (
+            <div key={room.roomNo} className="grid grid-cols-[200px_150px_100px_repeat(auto-fit,_120px)] gap-1 p-1 rounded-xl hover:bg-white/20 transition-all duration-300 group">
               {/* Room Number */}
-              <div className="h-12 flex items-center justify-between px-4 border-r border-gray-200 bg-white">
+              <div className="h-12 flex items-center justify-between px-4 bg-white/80 backdrop-blur-sm rounded-lg border border-white/40 group-hover:bg-white/90 transition-all duration-300">
                 <div className="flex items-center gap-2">
-                  <Home className="h-4 w-4 text-blue-500" />
-                  <span className="font-medium text-gray-800">Room {room.roomNo}</span>
+                  <div className="w-5 h-5 bg-gradient-to-r from-blue-500 to-blue-600 rounded flex items-center justify-center">
+                    <Home className="h-3 w-3 text-white" />
+                  </div>
+                  <span className="font-semibold text-gray-800">Room {room.roomNo}</span>
                 </div>
                 <button
                   onClick={() => onToggleRoom(room.roomNo)}
-                  className={`p-1 rounded transition-colors ${
+                  className={`p-1 rounded-lg transition-all duration-300 ${
                     isRoomFullySelected(room.roomNo)
-                      ? 'text-green-600 hover:text-green-700'
-                      : 'text-gray-400 hover:text-gray-600'
+                      ? 'bg-gradient-to-r from-green-500 to-green-600 text-white shadow-md hover:from-green-400 hover:to-green-500'
+                      : 'text-gray-400 hover:text-blue-600 hover:bg-blue-50/80'
                   }`}
                   title={isRoomFullySelected(room.roomNo) ? 'Deselect all dates' : 'Select all available dates'}
                 >
@@ -701,12 +939,12 @@ const RoomChart = ({
               </div>
               
               {/* Room Type */}
-              <div className="h-12 flex items-center justify-center px-3 border-r border-gray-200 bg-white text-sm text-gray-600">
+              <div className="h-12 flex items-center justify-center px-3 bg-white/80 backdrop-blur-sm rounded-lg border border-white/40 text-sm text-gray-700 font-medium group-hover:bg-white/90 transition-all duration-300">
                 {getRoomType(room.roomNo)}
               </div>
               
               {/* Rate */}
-              <div className="h-12 flex items-center justify-center px-2 border-r border-gray-200 bg-white text-sm font-medium text-gray-800">
+              <div className="h-12 flex items-center justify-center px-2 bg-white/80 backdrop-blur-sm rounded-lg border border-white/40 text-sm font-bold text-gray-800 group-hover:bg-white/90 transition-all duration-300">
                 {getRoomRate(room.roomNo)}
               </div>
               
@@ -729,11 +967,15 @@ const RoomChart = ({
                     }
                   >
                     {!isAvailable ? (
-                      <X className="h-4 w-4" />
+                      <div className="w-5 h-5 bg-red-500 rounded-full flex items-center justify-center">
+                        <X className="h-3 w-3 text-white" />
+                      </div>
                     ) : isSelected ? (
-                      <Check className="h-4 w-4" />
+                      <div className="w-5 h-5 bg-green-600 rounded-full flex items-center justify-center">
+                        <Check className="h-3 w-3 text-white" />
+                      </div>
                     ) : (
-                      <div className="w-4 h-4 rounded border-2 border-current opacity-50"></div>
+                      <div className="w-5 h-5 rounded-full border-2 border-current opacity-60 group-hover:opacity-80 transition-opacity duration-300"></div>
                     )}
                   </div>
                 );
@@ -745,30 +987,47 @@ const RoomChart = ({
       
       {/* Bottom Summary Section */}
       {roomData.length > 0 && (
-        <div className="mt-6 bg-blue-50 p-4 rounded-lg border border-blue-100">
-          <div className="flex items-center justify-between text-sm">
-            <div className="flex items-center gap-6">
+        <div className="mt-6 backdrop-blur-md bg-white/60 border border-white/40 p-6 rounded-2xl shadow-lg">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div className="flex flex-wrap items-center gap-6">
               <div className="flex items-center gap-2">
-                <div className="w-3 h-3 bg-green-200 rounded"></div>
-                <span className="text-gray-600">Available ({
+                <div className="w-4 h-4 bg-gradient-to-r from-green-200 to-green-300 rounded-full border border-green-300 shadow-sm"></div>
+                <span className="text-gray-700 font-medium">Available ({
                   roomData.reduce((total, room) => total + room.availableDates.length, 0)
                 } slots)</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-3 h-3 bg-red-200 rounded"></div>
-                <span className="text-gray-600">Booked</span>
+                <div className="w-4 h-4 bg-gradient-to-r from-red-200 to-red-300 rounded-full border border-red-300 shadow-sm"></div>
+                <span className="text-gray-700 font-medium">Booked</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-3 h-3 bg-green-400 rounded"></div>
-                <span className="text-gray-600">Selected ({selectedRoomDates.size} slots)</span>
+                <div className="w-4 h-4 bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-full border border-yellow-400 shadow-sm"></div>
+                <span className="text-gray-700 font-medium">Selected ({selectedRoomDates.size} slots)</span>
               </div>
             </div>
-            <div className="text-blue-700 font-medium">
-              {roomData.length} rooms shown
+            <div className="backdrop-blur-sm bg-blue-500/20 border border-blue-300/30 px-4 py-2 rounded-xl">
+              <span className="text-blue-700 font-bold">
+                {roomData.length} rooms shown
+              </span>
             </div>
           </div>
         </div>
       )}
+
+      <style jsx>{`
+        @keyframes spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+        
+        .animate-spin {
+          animation: spin 1s linear infinite;
+        }
+        
+        .animation-delay-500 {
+          animation-delay: 0.5s;
+        }
+      `}</style>
     </div>
   );
 };
