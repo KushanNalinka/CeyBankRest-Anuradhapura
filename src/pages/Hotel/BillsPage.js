@@ -131,9 +131,11 @@ const BillsPage = () => {
             <div className="flex justify-between items-center mb-3">
               <div className="text-sm text-gray-700">
                 <p><strong>Reservation ID:</strong> {roomChargeBill.reservationId}</p>
-                <p><strong>In:</strong> {roomChargeBill.inDate}</p>
-                <p><strong>Out:</strong> {roomChargeBill.outDate}</p>
-                <p><strong>Nights:</strong> {roomChargeBill.nights}</p>
+                 <p><strong>NIC : </strong> {roomChargeBill.nicPassportPf}</p>
+                <p><strong>Name : </strong> {roomChargeBill.customerName}</p>
+                <p><strong>In : </strong> {roomChargeBill.inDate}</p>
+                <p><strong>Out : </strong> {roomChargeBill.outDate}</p>
+                <p><strong>Nights : </strong> {roomChargeBill.nights}</p>
               </div>
               <div className="text-right font-bold text-lg text-[#28245F]">
                 Room Total: Rs {roomChargeBill.roomTotal.toLocaleString()}
