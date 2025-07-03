@@ -724,7 +724,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
-import { FaCheckCircle, FaTimesCircle, FaEdit } from 'react-icons/fa';
+import { FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
 
 export default function StoreRequisitionItems() {
   const API_URL = process.env.REACT_APP_API_URL;
@@ -735,9 +735,6 @@ export default function StoreRequisitionItems() {
   const [items, setItems] = useState([]);
   const [filteredItems, setFilteredItems] = useState([]);
   const [message, setMessage] = useState('');
-  const [showPopup, setShowPopup] = useState(false);
-  const [selectedItem, setSelectedItem] = useState(null);
-  const [approveQty, setApproveQty] = useState(0);
   const [successMsg, setSuccessMsg] = useState('');
   const [showFinalizePopup, setShowFinalizePopup] = useState(false);
   const [confirmFinalize, setConfirmFinalize] = useState(false);
@@ -757,12 +754,12 @@ export default function StoreRequisitionItems() {
     axios
       .get(`${API_URL}/v1/store-requisitions/${id}/items`)
       .then((res) => {
-        const updatedItems = res.data.map(item => ({
+        const updated = res.data.map(item => ({
           ...item,
-          isApproved: item.approvedQuantity > 0,
+          isChecked: item.approvedQuantity > 0
         }));
-        setItems(updatedItems);
-        setFilteredItems(updatedItems);
+        setItems(updated);
+        setFilteredItems(updated);
       })
       .catch(() => setMessage('Failed to load requisition items.'));
   };
@@ -787,69 +784,42 @@ export default function StoreRequisitionItems() {
     setCurrentPage(1);
   };
 
-  const handleSubmitApproval = () => {
-    axios
-      .put(`${API_URL}/v1/store-requisitions/approve-item`, {
-        itemId: selectedItem?.id,
-        approvedQuantity: approveQty,
-      })
-      .then(() => {
-        setShowPopup(false);
-        setSuccessMsg('Approval updated successfully.');
-        fetchItems();
-      })
-      .catch(() => alert('Failed to update approval.'));
+  const handleApprovedQtyChange = (id, value) => {
+    const updated = items.map(item => item.id === id ? {
+      ...item,
+      approvedQuantity: Number(value)
+    } : item);
+    setItems(updated);
+    setFilteredItems(updated);
   };
 
-  const handleFinalizeApproval = () => {
+  const handleCheckboxChange = (id) => {
+    const updated = items.map(item => item.id === id ? {
+      ...item,
+      isChecked: !item.isChecked
+    } : item);
+    setItems(updated);
+    setFilteredItems(updated);
+  };
+
+  const allChecked = filteredItems.length > 0 && filteredItems.every(i => i.isChecked);
+
+  const finalizeStoreRequisition = () => {
     const approvalList = items.map(item => ({
       itemId: item.id,
-      approvedQuantity: item.approvedQuantity,
+      approvedQuantity: item.approvedQuantity
     }));
-
     axios
       .put(`${API_URL}/v1/store-requisitions/approve-itemslist`, {
         requisitionId: id,
-        items: approvalList,
+        items: approvalList
       })
       .then(() => {
         setShowFinalizePopup(false);
         navigate(-1);
       })
-      .catch(() => alert('Failed to finalize approval.'));
+      .catch(() => alert("Approval failed."));
   };
-
-  const handleApproveCheckbox = (itemId) => {
-    const updatedItems = items.map(item => {
-      if (item.id === itemId) {
-        const isApproved = !item.isApproved;
-        return {
-          ...item,
-          isApproved,
-          approvedQuantity: isApproved ? item.approvedQuantity || 1 : 0,
-        };
-      }
-      return item;
-    });
-    setItems(updatedItems);
-    setFilteredItems(updatedItems);
-  };
-
-  const handleApprovedQtyChange = (itemId, value) => {
-    const updatedItems = items.map(item => {
-      if (item.id === itemId) {
-        return {
-          ...item,
-          approvedQuantity: value,
-        };
-      }
-      return item;
-    });
-    setItems(updatedItems);
-    setFilteredItems(updatedItems);
-  };
-
-  const allApproved = items.length > 0 && items.every(i => i.approvedQuantity > 0);
 
   return (
     <div className="p-6 relative">
@@ -863,10 +833,10 @@ export default function StoreRequisitionItems() {
       </button>
 
       <button
-        disabled={status === 'APPROVED' || !allApproved}
+        disabled={status === 'APPROVED' || !allChecked}
         onClick={() => setShowFinalizePopup(true)}
         className={`px-6 py-2 ml-4 rounded font-semibold ${
-          status === 'APPROVED' || !allApproved
+          status === 'APPROVED' || !allChecked
             ? 'bg-gray-400 text-white cursor-not-allowed'
             : 'bg-[#24256D] text-white hover:bg-[#1c1d50]'
         }`}
@@ -895,7 +865,7 @@ export default function StoreRequisitionItems() {
             <th className="p-2 border">Required</th>
             <th className="p-2 border">Approved</th>
             <th className="p-2 border">Status</th>
-            <th className="p-2 border">Action</th>
+            <th className="p-2 border">✔</th>
           </tr>
         </thead>
         <tbody>
@@ -912,15 +882,13 @@ export default function StoreRequisitionItems() {
                   value={item.approvedQuantity}
                   min={0}
                   max={item.requiredQuantity}
-                  onChange={(e) =>
-                    handleApprovedQtyChange(item.id, Number(e.target.value))
-                  }
+                  onChange={(e) => handleApprovedQtyChange(item.id, e.target.value)}
                   className="w-20 border rounded px-2 py-1"
                   disabled={status === 'APPROVED'}
                 />
               </td>
               <td className="p-2 border">
-                {item.isApproved ? (
+                {item.isChecked ? (
                   <FaCheckCircle className="text-green-600 text-lg mx-auto" />
                 ) : (
                   <FaTimesCircle className="text-red-500 text-lg mx-auto" />
@@ -929,8 +897,8 @@ export default function StoreRequisitionItems() {
               <td className="p-2 border">
                 <input
                   type="checkbox"
-                  checked={item.isApproved}
-                  onChange={() => handleApproveCheckbox(item.id)}
+                  checked={item.isChecked}
+                  onChange={() => handleCheckboxChange(item.id)}
                   disabled={status === 'APPROVED'}
                 />
               </td>
@@ -974,19 +942,6 @@ export default function StoreRequisitionItems() {
                     ) : (
                       <FaTimesCircle className="text-red-500 text-xl" />
                     )}
-                    <button
-                      disabled={status === 'APPROVED'}
-                      className={`bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-700 text-sm ${
-                        status === 'APPROVED' ? 'opacity-50 cursor-not-allowed' : ''
-                      }`}
-                      onClick={() => {
-                        setSelectedItem(item);
-                        setApproveQty(item.approvedQuantity);
-                        setShowPopup(true);
-                      }}
-                    >
-                      <FaEdit />
-                    </button>
                   </div>
                 </div>
               ))}
@@ -1012,7 +967,7 @@ export default function StoreRequisitionItems() {
                 Cancel
               </button>
               <button
-                onClick={handleFinalizeApproval}
+                onClick={finalizeStoreRequisition}
                 disabled={!confirmFinalize || status === 'APPROVED'}
                 className={`px-4 py-2 rounded text-white ${
                   confirmFinalize && status !== 'APPROVED'
@@ -1021,42 +976,6 @@ export default function StoreRequisitionItems() {
                 }`}
               >
                 Approve Store Requisition
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {showPopup && selectedItem && (
-        <div className="fixed inset-0 z-50 flex justify-center items-center bg-black/60">
-          <div className="bg-white border shadow-lg rounded-lg p-6 w-96 relative z-50">
-            <h3 className="text-lg font-bold mb-4">Approve Quantity</h3>
-            <p><strong>Item Name:</strong> {selectedItem.itemName}</p>
-            <p><strong>Item Code:</strong> {selectedItem.itemCode}</p>
-            <p><strong>Required Quantity:</strong> {selectedItem.requiredQuantity}</p>
-            <label className="block mt-4 font-medium">
-              Approved Quantity:
-              <input
-                type="number"
-                value={approveQty}
-                onChange={(e) => setApproveQty(Number(e.target.value))}
-                className="mt-1 block w-full border rounded px-3 py-1 shadow"
-                min={0}
-                max={selectedItem.requiredQuantity}
-              />
-            </label>
-            <div className="mt-5 flex justify-end gap-3">
-              <button
-                onClick={() => setShowPopup(false)}
-                className="bg-gray-400 text-white px-3 py-1 rounded hover:bg-gray-500"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleSubmitApproval}
-                className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
-              >
-                Submit
               </button>
             </div>
           </div>
