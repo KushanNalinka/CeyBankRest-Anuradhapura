@@ -742,7 +742,6 @@ export default function StoreRequisitionItems() {
   const [showFinalizePopup, setShowFinalizePopup] = useState(false);
   const [confirmFinalize, setConfirmFinalize] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedItems, setSelectedItems] = useState({});
   const status = location.state?.status ?? 'NOT_APPROVED';
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -758,13 +757,12 @@ export default function StoreRequisitionItems() {
     axios
       .get(`${API_URL}/v1/store-requisitions/${id}/items`)
       .then((res) => {
-        setItems(res.data);
-        setFilteredItems(res.data);
-        const selected = {};
-        res.data.forEach(item => {
-          selected[item.id] = false;
-        });
-        setSelectedItems(selected);
+        const updatedItems = res.data.map(item => ({
+          ...item,
+          isApproved: item.approvedQuantity > 0,
+        }));
+        setItems(updatedItems);
+        setFilteredItems(updatedItems);
       })
       .catch(() => setMessage('Failed to load requisition items.'));
   };
@@ -789,26 +787,6 @@ export default function StoreRequisitionItems() {
     setCurrentPage(1);
   };
 
-  const handleQuantityChange = (id, value) => {
-    setItems(prev =>
-      prev.map(item =>
-        item.id === id ? { ...item, approvedQuantity: Number(value) } : item
-      )
-    );
-    setFilteredItems(prev =>
-      prev.map(item =>
-        item.id === id ? { ...item, approvedQuantity: Number(value) } : item
-      )
-    );
-  };
-
-  const handleCheckboxChange = (id) => {
-    setSelectedItems(prev => ({
-      ...prev,
-      [id]: !prev[id],
-    }));
-  };
-
   const handleSubmitApproval = () => {
     axios
       .put(`${API_URL}/v1/store-requisitions/approve-item`, {
@@ -823,24 +801,55 @@ export default function StoreRequisitionItems() {
       .catch(() => alert('Failed to update approval.'));
   };
 
-  const allApproved = filteredItems.length > 0 && filteredItems.every(i => i.approvedQuantity > 0);
+  const handleFinalizeApproval = () => {
+    const approvalList = items.map(item => ({
+      itemId: item.id,
+      approvedQuantity: item.approvedQuantity,
+    }));
 
-  const finalizeStoreRequisition = () => {
-    const itemsToApprove = items.filter(item => selectedItems[item.id]);
-    const payload = {
-      approvals: itemsToApprove.map(item => ({
-        itemId: item.id,
-        approvedQuantity: item.approvedQuantity,
-      })),
-    };
     axios
-      .put(`${API_URL}/v1/store-requisitions/approve-itemslist`, payload)
+      .put(`${API_URL}/v1/store-requisitions/approve-itemslist`, {
+        requisitionId: id,
+        items: approvalList,
+      })
       .then(() => {
         setShowFinalizePopup(false);
         navigate(-1);
       })
-      .catch(() => alert("Approval failed."));
+      .catch(() => alert('Failed to finalize approval.'));
   };
+
+  const handleApproveCheckbox = (itemId) => {
+    const updatedItems = items.map(item => {
+      if (item.id === itemId) {
+        const isApproved = !item.isApproved;
+        return {
+          ...item,
+          isApproved,
+          approvedQuantity: isApproved ? item.approvedQuantity || 1 : 0,
+        };
+      }
+      return item;
+    });
+    setItems(updatedItems);
+    setFilteredItems(updatedItems);
+  };
+
+  const handleApprovedQtyChange = (itemId, value) => {
+    const updatedItems = items.map(item => {
+      if (item.id === itemId) {
+        return {
+          ...item,
+          approvedQuantity: value,
+        };
+      }
+      return item;
+    });
+    setItems(updatedItems);
+    setFilteredItems(updatedItems);
+  };
+
+  const allApproved = items.length > 0 && items.every(i => i.approvedQuantity > 0);
 
   return (
     <div className="p-6 relative">
@@ -879,7 +888,6 @@ export default function StoreRequisitionItems() {
       <table className="table-auto w-full border shadow-md rounded-lg mt-2">
         <thead>
           <tr className="bg-gray-100">
-            <th className="p-2 border">Select</th>
             <th className="p-2 border">Item ID</th>
             <th className="p-2 border">Item Code</th>
             <th className="p-2 border">Name</th>
@@ -887,19 +895,12 @@ export default function StoreRequisitionItems() {
             <th className="p-2 border">Required</th>
             <th className="p-2 border">Approved</th>
             <th className="p-2 border">Status</th>
+            <th className="p-2 border">Action</th>
           </tr>
         </thead>
         <tbody>
           {paginatedItems.map((item) => (
             <tr key={item.id} className="text-center hover:bg-gray-50">
-              <td className="p-2 border">
-                <input
-                  type="checkbox"
-                  checked={selectedItems[item.id] || false}
-                  onChange={() => handleCheckboxChange(item.id)}
-                  disabled={status === 'APPROVED'}
-                />
-              </td>
               <td className="p-2 border">{item.id}</td>
               <td className="p-2 border">{item.itemCode}</td>
               <td className="p-2 border">{item.itemName}</td>
@@ -908,20 +909,30 @@ export default function StoreRequisitionItems() {
               <td className="p-2 border">
                 <input
                   type="number"
-                  min="0"
-                  max={item.requiredQuantity}
                   value={item.approvedQuantity}
-                  onChange={(e) => handleQuantityChange(item.id, e.target.value)}
-                  disabled={status === 'APPROVED'}
+                  min={0}
+                  max={item.requiredQuantity}
+                  onChange={(e) =>
+                    handleApprovedQtyChange(item.id, Number(e.target.value))
+                  }
                   className="w-20 border rounded px-2 py-1"
+                  disabled={status === 'APPROVED'}
                 />
               </td>
               <td className="p-2 border">
-                {item.approvedQuantity > 0 ? (
+                {item.isApproved ? (
                   <FaCheckCircle className="text-green-600 text-lg mx-auto" />
                 ) : (
                   <FaTimesCircle className="text-red-500 text-lg mx-auto" />
                 )}
+              </td>
+              <td className="p-2 border">
+                <input
+                  type="checkbox"
+                  checked={item.isApproved}
+                  onChange={() => handleApproveCheckbox(item.id)}
+                  disabled={status === 'APPROVED'}
+                />
               </td>
             </tr>
           ))}
@@ -1001,7 +1012,7 @@ export default function StoreRequisitionItems() {
                 Cancel
               </button>
               <button
-                onClick={finalizeStoreRequisition}
+                onClick={handleFinalizeApproval}
                 disabled={!confirmFinalize || status === 'APPROVED'}
                 className={`px-4 py-2 rounded text-white ${
                   confirmFinalize && status !== 'APPROVED'
