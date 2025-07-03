@@ -721,8 +721,6 @@
 // }
 
 
-
-
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
@@ -807,9 +805,19 @@ export default function StoreRequisitionItems() {
   const allChecked = filteredItems.length > 0 && filteredItems.every(i => i.isChecked);
 
   const finalizeStoreRequisition = () => {
+    const approvalList = items.map(item => ({
+      itemId: item.id,
+      approvedQuantity: item.approvedQuantity
+    }));
     axios
-      .put(`${API_URL}/v1/store-requisitions/approve-statuses`, {
-        requisitionIds: [parseInt(id)]
+      .put(`${API_URL}/v1/store-requisitions/approve-itemslist`, {
+        requisitionId: id,
+        items: approvalList
+      })
+      .then(() => {
+        return axios.put(`${API_URL}/v1/store-requisitions/approve-statuses`, {
+          requisitionIds: [parseInt(id)]
+        });
       })
       .then(() => {
         setShowFinalizePopup(false);
