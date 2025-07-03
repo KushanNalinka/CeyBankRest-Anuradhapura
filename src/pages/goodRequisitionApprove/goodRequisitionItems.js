@@ -594,7 +594,7 @@ export default function GoodRequisitionItems() {
               <td className="p-2 border">
                 <input
                   type="number"
-                  value={item.requiredQuantity}
+                  value={item.approvedQuantity}
                   min={0}
                   max={item.requiredQuantity}
                   onChange={(e) => handleApprovedQtyChange(item.id, e.target.value)}
