@@ -107,6 +107,7 @@
 
 import { FaUserCircle, FaBed, FaStore, FaMoneyBillWave } from 'react-icons/fa';
 import { MdOutlineFoodBank } from 'react-icons/md';
+import {ceybankimge} from '../../assets/images/cey.png';
 
 function Dashboard() {
   return (
@@ -148,18 +149,12 @@ function Dashboard() {
             <div className="flex items-center gap-4">
               {/* Bank of Ceylon Logo */}
               <div className="relative w-16 h-16">
-                <div className="absolute inset-0 bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-full border-4 border-black"></div>
-                <div className="absolute inset-2 bg-black rounded-full flex items-center justify-center">
-                  <div className="text-yellow-400 text-xs font-bold">
-                    <svg viewBox="0 0 24 16" className="w-5 h-4 fill-current">
-                      <path d="M12 2c-2 0-4 1-4 3v2c0 1 1 2 2 2h4c1 0 2-1 2-2V5c0-2-2-3-4-3z"/>
-                      <path d="M8 8v4c0 1 1 2 2 2h4c1 0 2-1 2-2V8"/>
-                      <circle cx="10" cy="4" r="0.5"/>
-                      <circle cx="14" cy="4" r="0.5"/>
-                    </svg>
-                  </div>
-                </div>
-              </div>
+  <div className="absolute inset-0 bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-full border-4 border-black"></div>
+  <div className="absolute inset-2 bg-black rounded-full flex items-center justify-center">
+    <img src="ceybankimge" alt="Icon" className="w-5 h-4" />
+  </div>
+</div>
+
               <div>
                 <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent">
                   Welcome to CeyBank
