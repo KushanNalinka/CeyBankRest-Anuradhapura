@@ -111,8 +111,8 @@ const Sidebar = ({ setSelectedCategory }) => {
             key={category.name}
             className={`h-16 flex items-center justify-between p-4 rounded-lg shadow-lg my-2 cursor-pointer transition-colors duration-300 ${
               activeCategory === category.name
-                ? 'bg-[#FFC10C] text-white'
-                : 'bg-[#28245F] text-white'
+                ? 'bg-yellow-400 text-white'
+                : 'bg-blue-600 text-white'
             } hover:bg-[#FFC10C] hover:text-white`}
             onClick={() => handleClick(category.name)}
           >
