@@ -177,6 +177,11 @@ const AllRoomBills = () => {
   const billsPerPage = 4;
   const [error, setError] = useState('');
 
+  // 🆕 Report states
+  const [reportDate, setReportDate] = useState(new Date().toISOString().split('T')[0]);
+  const [dailyStats, setDailyStats] = useState({ rooms: [], total: 0 });
+  const [showRoomDetails, setShowRoomDetails] = useState(false);
+
   useEffect(() => {
     const fetchAllRoomBills = async () => {
       try {
@@ -193,6 +198,29 @@ const AllRoomBills = () => {
 
     fetchAllRoomBills();
   }, []);
+
+
+  const computeDailyReport = (billsData, selectedDate) => {
+    const filtered = billsData.filter(b => b.inDate === selectedDate);
+    let total = 0;
+    let rooms = [];
+
+    filtered.forEach(bill => {
+      bill.rooms.forEach(room => {
+        rooms.push({ roomNo: room.roomNo, roomType: room.roomType, ratePerNight: room.ratePerNight });
+        total += room.ratePerNight;
+      });
+    });
+
+    setDailyStats({ total, rooms });
+  };
+
+  const handleReportDateChange = (e) => {
+    const selected = e.target.value;
+    setReportDate(selected);
+    computeDailyReport(bills, selected);
+    setShowRoomDetails(false);
+  };
 
   const toggleExpand = (id) => {
     setExpandedId((prev) => (prev === id ? null : id));
@@ -287,6 +315,58 @@ const AllRoomBills = () => {
               </div>
             </div>
           </div>
+
+
+
+           {/* 🆕 Daily Report Box */}
+          <div className="mb-6 bg-white border rounded-lg p-6 shadow-sm">
+            <h3 className="text-lg font-medium text-gray-900 mb-4">Daily Room Income Report</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Select Date</label>
+                <input
+                  type="date"
+                  value={reportDate}
+                  onChange={handleReportDateChange}
+                  className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Total Room Income</label>
+                <button
+                  onClick={() => setShowRoomDetails(prev => !prev)}
+                  className="w-full text-left px-4 py-2 bg-green-100 text-green-800 font-bold rounded-lg hover:bg-green-200 transition"
+                >
+                  Rs {dailyStats.total.toLocaleString()}
+                </button>
+              </div>
+            </div>
+
+            {/* 🆕 Room Details List */}
+            {showRoomDetails && (
+              <div className="mt-6 border rounded-lg bg-white overflow-hidden">
+                <table className="min-w-full">
+                  <thead className="bg-green-600 text-white">
+                    <tr>
+                      <th className="py-3 px-4 text-left">Room Number</th>
+                      <th className="py-3 px-4 text-left">Room Type</th>
+                      <th className="py-3 px-4 text-right">Rate per Night</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200">
+                    {dailyStats.rooms.map((room, index) => (
+                      <tr key={index} className="hover:bg-gray-50">
+                        <td className="py-3 px-4">{room.roomNo}</td>
+                        <td className="py-3 px-4">{room.roomType}</td>
+                        <td className="py-3 px-4 text-right">Rs {room.ratePerNight.toLocaleString()}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+
 
           {/* Bills List */}
           <div className="space-y-4">
