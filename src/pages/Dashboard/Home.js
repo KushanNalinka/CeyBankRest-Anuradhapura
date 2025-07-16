@@ -107,7 +107,7 @@
 
 import { FaUserCircle, FaBed, FaStore, FaMoneyBillWave } from 'react-icons/fa';
 import { MdOutlineFoodBank } from 'react-icons/md';
-import {ceybankimge} from '../../assets/images/cey.png';
+import ceybankimage from '../../assets/images/cey.png';
 
 function Dashboard() {
   return (
@@ -151,7 +151,7 @@ function Dashboard() {
               <div className="relative w-16 h-16">
   <div className="absolute inset-0 bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-full border-4 border-black"></div>
   <div className="absolute inset-2 bg-black rounded-full flex items-center justify-center">
-    <img src="ceybankimge" alt="Icon" className="w-5 h-4" />
+    <img src={ceybankimage} alt="Icon" className="w-12 h-12" />
   </div>
 </div>
 
