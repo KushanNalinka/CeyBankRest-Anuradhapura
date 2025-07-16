@@ -903,8 +903,8 @@ const navItems = [
       { name: 'Meal Ordering', path: '/cashier', pro: false },
       { name: 'Berverages Ordering', path: '/bar', pro: false },
       { name: 'Reservation Details', path: '/reservations', pro: false },
-      { name: 'Reserverd Rooms', path: '/reservedrooms', pro: false },
-      { name: 'Non Reserved Rooms', path: '/nonreservedrooms', pro: false },
+      { name: 'Rooms Availability', path: '/reservedrooms', pro: false },
+    
     ],
   },
   {
