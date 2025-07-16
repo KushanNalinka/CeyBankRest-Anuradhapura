@@ -551,10 +551,12 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, ChevronDown, CheckCircle, XCircle, Loader2, Search, Hotel, CalendarDays } from 'lucide-react';
 
+const API_URL = process.env.REACT_APP_API_URL;
+
 const RoomChart = () => {
-  const API_URL = 'http://localhost:8080/api/rooms/available-on-range';
-  const ROOM_DETAILS_URL = 'http://localhost:8080/api/rooms/';
-  const ROOM_TYPES_URL = 'http://localhost:8080/api/room-types';
+  const API_URL =  `${API_URL}/rooms/available-on-range`;
+  const ROOM_DETAILS_URL =  `${API_URL}/rooms/`;
+  const ROOM_TYPES_URL = `${API_URL}/room-types`;
   
   const [inDate, setInDate] = useState(null);
   const [outDate, setOutDate] = useState(null);

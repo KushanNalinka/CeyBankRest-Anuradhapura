@@ -131,7 +131,7 @@ export default function App() {
                <Route path="/beveragebills" element={<BeverageBillsTable />} />
                <Route path="/roombills" element={<RoomBillCard />} />
 
-            <Route path="/roomchart" element={<RoomChart />} /> 
+            <Route path="/reservedrooms" element={<RoomChart />} /> 
 
 
           </Route>
