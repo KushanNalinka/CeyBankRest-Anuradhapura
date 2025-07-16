@@ -329,13 +329,32 @@ const FoodBillsTable = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [expandedBillId, setExpandedBillId] = useState(null);
+  const [reportDate, setReportDate] = useState(new Date().toISOString().split('T')[0]);
   const billsPerPage = 5;
+
+   const [reportStats, setReportStats] = useState({
+    breakfast: 0,
+    lunch: 0,
+    dinner: 0,
+  });
+
+  // ⭐ New Feature: Modal State
+  const [showModal, setShowModal] = useState(false);
+  const [modalData, setModalData] = useState({
+    mealType: '',
+    items: [],
+  });
+
 
   useEffect(() => {
     (async () => {
       try {
         const { data } = await axios.get(`${API_URL}/reservations/bills/meals`);
+
+        // 🔽 Sort bills by date (most recent first)
+        data.sort((a, b) => new Date(b.date) - new Date(a.date));
         setBills(data);
+
         setFilteredBills(data);
       } catch (err) {
         console.error('Failed to fetch food bills:', err);
@@ -365,8 +384,41 @@ const FoodBillsTable = () => {
     setExpandedBillId(null);
   }, [searchTerm, bills]);
 
+   useEffect(() => {
+    const stats = { breakfast: 0, lunch: 0, dinner: 0 };
+    bills.forEach((bill) => {
+      if (bill.date === reportDate) {
+        const meal = bill.mealType.toLowerCase();
+        if (meal === 'breakfast') stats.breakfast++;
+        else if (meal === 'lunch') stats.lunch++;
+        else if (meal === 'dinner') stats.dinner++;
+      }
+    });
+    setReportStats(stats);
+  }, [reportDate, bills]);
+
   const toggleExpand = (id) => {
     setExpandedBillId((prevId) => (prevId === id ? null : id));
+  };
+
+
+  // ⭐ New Feature: Open Modal
+  const openMealModal = (mealType) => {
+    const items = [];
+
+    bills.forEach((bill) => {
+      if (bill.date === reportDate && bill.mealType.toLowerCase() === mealType) {
+        bill.foodBillItems.forEach((item) => {
+          items.push({ name: item.foodName, portions: item.portions });
+        });
+      }
+    });
+
+    setModalData({
+      mealType,
+      items,
+    });
+    setShowModal(true);
   };
 
   // Pagination
@@ -412,6 +464,120 @@ const FoodBillsTable = () => {
               </div>
             </div>
           </div>
+
+
+           {/* Report Box - New Feature */}
+          {/* <div className="mb-6 bg-white border rounded-lg p-6 shadow-sm">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Meal Order Summary</h3>
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+              <div className="flex items-center gap-2">
+                <label className="text-sm font-medium text-gray-700">Select Date:</label>
+                <input
+                  type="date"
+                  value={reportDate}
+                  onChange={(e) => setReportDate(e.target.value)}
+                  className="border rounded-lg px-3 py-2 text-sm focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4 md:mt-0 w-full">
+                <div className="bg-blue-100 p-4 rounded-lg text-center">
+                  <p className="text-sm font-medium text-blue-700">Breakfast</p>
+                  <p className="text-xl font-bold text-blue-900">{reportStats.breakfast}</p>
+                </div>
+                <div className="bg-green-100 p-4 rounded-lg text-center">
+                  <p className="text-sm font-medium text-green-700">Lunch</p>
+                  <p className="text-xl font-bold text-green-900">{reportStats.lunch}</p>
+                </div>
+                <div className="bg-orange-100 p-4 rounded-lg text-center">
+                  <p className="text-sm font-medium text-orange-700">Dinner</p>
+                  <p className="text-xl font-bold text-orange-900">{reportStats.dinner}</p>
+                </div>
+              </div>
+            </div>
+          </div> */}
+
+           {/* Report Box */}
+          <div className="mb-6 bg-white border rounded-lg p-6 shadow-sm">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Meal Order Summary</h3>
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+              <div className="flex items-center gap-2">
+                <label className="text-sm font-medium text-gray-700">Select Date:</label>
+                <input
+                  type="date"
+                  value={reportDate}
+                  onChange={(e) => setReportDate(e.target.value)}
+                  className="border rounded-lg px-3 py-2 text-sm focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4 md:mt-0 w-full">
+                <div
+                  className="bg-blue-100 p-4 rounded-lg text-center cursor-pointer hover:bg-blue-200 transition"
+                  onClick={() => openMealModal('breakfast')}
+                >
+                  <p className="text-sm font-medium text-blue-700">Breakfast</p>
+                  <p className="text-xl font-bold text-blue-900">{reportStats.breakfast}</p>
+                </div>
+                <div
+                  className="bg-green-100 p-4 rounded-lg text-center cursor-pointer hover:bg-green-200 transition"
+                  onClick={() => openMealModal('lunch')}
+                >
+                  <p className="text-sm font-medium text-green-700">Lunch</p>
+                  <p className="text-xl font-bold text-green-900">{reportStats.lunch}</p>
+                </div>
+                <div
+                  className="bg-orange-100 p-4 rounded-lg text-center cursor-pointer hover:bg-orange-200 transition"
+                  onClick={() => openMealModal('dinner')}
+                >
+                  <p className="text-sm font-medium text-orange-700">Dinner</p>
+                  <p className="text-xl font-bold text-orange-900">{reportStats.dinner}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Modal - Meal Items List */}
+          {showModal && (
+            <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
+              <div className="bg-white rounded-lg shadow-lg max-w-md w-full mx-4">
+                <div className="flex justify-between items-center border-b px-6 py-4">
+                  <h4 className="text-lg font-semibold text-gray-900 capitalize">
+                    {modalData.mealType} - {reportDate}
+                  </h4>
+                  <button
+                    onClick={() => setShowModal(false)}
+                    className="text-gray-500 hover:text-gray-800"
+                  >
+                    ×
+                  </button>
+                </div>
+                <div className="p-6 max-h-[400px] overflow-y-auto">
+                  {modalData.items.length === 0 ? (
+                    <p className="text-sm text-gray-500">No items found for this meal.</p>
+                  ) : (
+                    <ul className="space-y-2">
+                      {modalData.items.map((item, index) => (
+                        <li key={index} className="flex justify-between border-b pb-2">
+                          <span className="font-medium text-gray-800">{item.name}</span>
+                          <span className="text-sm text-purple-700 font-semibold">
+                            {item.portions} portion{item.portions > 1 ? 's' : ''}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+                <div className="px-6 py-4 border-t text-right">
+                  <button
+                    onClick={() => setShowModal(false)}
+                    className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
 
           {/* Bills List */}
           <div className="space-y-4">
