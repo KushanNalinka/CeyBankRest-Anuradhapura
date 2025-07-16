@@ -335,12 +335,18 @@ const BeverageBillsTable = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [expandedBillId, setExpandedBillId] = useState(null);
+  const [reportDate, setReportDate] = useState(new Date().toISOString().split('T')[0]);
+  const [showReportItems, setShowReportItems] = useState(false);
   const billsPerPage = 3;
 
   useEffect(() => {
     (async () => {
       try {
         const { data } = await axios.get(`${API_URL}/reservations/bills/beverages`);
+
+        // ✅ Sort by date descending (most recent first)
+        data.sort((a, b) => new Date(b.date) - new Date(a.date));
+        
         setBills(data);
         setFilteredBills(data);
       } catch (err) {
@@ -376,6 +382,25 @@ const BeverageBillsTable = () => {
   const toggleExpand = (id) => {
     setExpandedBillId((prevId) => (prevId === id ? null : id));
   };
+
+
+  // 📦 Report data logic
+  const reportBills = bills.filter((b) => b.date === reportDate);
+  const beverageCount = reportBills.reduce((total, bill) => {
+    return total + bill.beverageBillItems.reduce((sum, item) => sum + item.bottlesOrGlasses, 0);
+  }, 0);
+
+  const reportItemsMap = {};
+  reportBills.forEach((bill) => {
+    bill.beverageBillItems.forEach((item) => {
+      if (!reportItemsMap[item.beverageName]) {
+        reportItemsMap[item.beverageName] = 0;
+      }
+      reportItemsMap[item.beverageName] += item.bottlesOrGlasses;
+    });
+  });
+
+  const reportItems = Object.entries(reportItemsMap).map(([name, quantity]) => ({ name, quantity }));
 
   // Pagination
   const indexOfLast = currentPage * billsPerPage;
@@ -420,6 +445,54 @@ const BeverageBillsTable = () => {
               </div>
             </div>
           </div>
+
+
+          {/* 📊 Report Box */}
+          <div className="mb-6 bg-white border border-blue-300 rounded-lg p-4 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div className="flex items-center gap-2">
+              <label htmlFor="report-date" className="font-medium text-gray-700">Select Date:</label>
+              <input
+                id="report-date"
+                type="date"
+                value={reportDate}
+                onChange={(e) => setReportDate(e.target.value)}
+                className="border border-gray-300 rounded-md px-3 py-1 focus:ring focus:ring-blue-200 outline-none"
+              />
+            </div>
+            <button
+              onClick={() => setShowReportItems(true)}
+              className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition"
+            >
+              {`Total Beverage Items on ${reportDate}: ${beverageCount}`}
+            </button>
+          </div>
+
+          {/* 🧾 Report Item Modal */}
+          {showReportItems && (
+            <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
+              <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md relative">
+                <button
+                  onClick={() => setShowReportItems(false)}
+                  className="absolute top-2 right-2 text-gray-500 hover:text-gray-800"
+                >
+                  ✕
+                </button>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Beverage Items on {reportDate}</h3>
+                <ul className="space-y-2 max-h-60 overflow-y-auto">
+                  {reportItems.length === 0 ? (
+                    <li className="text-gray-500">No items found.</li>
+                  ) : (
+                    reportItems.map((item, index) => (
+                      <li key={index} className="flex justify-between border-b pb-1">
+                        <span className="font-medium text-gray-800">{item.name}</span>
+                        <span className="text-gray-700">{item.quantity}</span>
+                      </li>
+                    ))
+                  )}
+                </ul>
+              </div>
+            </div>
+          )}
 
           {/* Bills List */}
           <div className="space-y-4">

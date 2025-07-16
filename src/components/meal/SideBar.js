@@ -133,7 +133,7 @@ const Sidebar = ({ setSelectedCategory }) => {
      
         <Link to="/cashier" className="no-underline">
         <div className="h-16 flex items-center justify-center bg-[#FFC10C] shadow-xl cursor-pointer">
-          <span className="text-xl font-bold text-[#28245F]">Menu</span>
+          <span className="text-xl font-bold text-[#28245F]">Dashboard</span>
         
       </div>
       </Link>

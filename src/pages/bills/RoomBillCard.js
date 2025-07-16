@@ -181,6 +181,8 @@ const AllRoomBills = () => {
     const fetchAllRoomBills = async () => {
       try {
         const { data } = await axios.get(`${API_URL}/reservations/room-bill`);
+         // 🔽 Sort by check-in date DESC (most recent first)
+        const sortedData = data.sort((a, b) => new Date(b.inDate) - new Date(a.inDate));
         setBills(data);
         setFilteredBills(data);
       } catch (err) {
@@ -206,6 +208,9 @@ const AllRoomBills = () => {
       (!updatedFilters.outDate || bill.outDate === updatedFilters.outDate) &&
       (!updatedFilters.roomNo || bill.rooms.some(r => r.roomNo.includes(updatedFilters.roomNo)))
     );
+
+     // 🔽 Sort filtered results by inDate descending
+    filtered.sort((a, b) => new Date(b.inDate) - new Date(a.inDate));
 
     setFilteredBills(filtered);
     setCurrentPage(1);
