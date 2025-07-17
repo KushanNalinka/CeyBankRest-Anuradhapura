@@ -1482,7 +1482,7 @@ const CartTab = () => {
 
         {/* ─────────── Confirmation popup ─────────── */}
         {showPopup && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40">
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div className="bg-white w-11/12 max-w-lg p-6 rounded-xl shadow-lg relative">
               {/* Large room number */}
               <h2 className="text-3xl font-extrabold text-center mb-2 text-[#24256D]">
