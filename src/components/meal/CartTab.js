@@ -1625,6 +1625,7 @@ import { useParams } from 'react-router-dom';
 const CartTab = () => {
   const API_URL = process.env.REACT_APP_API_URL;
   const { items, clearCart, changeQuantity } = useCart();
+  const { meal } = useParams();
 
   const [roomNumber, setRoomNumber] = useState('');
   const [reservations, setReservations] = useState([]);
@@ -1634,12 +1635,9 @@ const CartTab = () => {
   const [msg, setMsg] = useState('');
   const [msgType, setMsgType] = useState('success');
 
-  const { meal } = useParams();
-
   const today = new Date();
   const formattedDate = today.toISOString().split('T')[0];
   const formattedTime = today.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
   const totalAmount = items.reduce((t, item) => {
     const product = products.find((p) => p.id === item.productId);
     return t + (product?.price ?? 0) * item.quantity;
@@ -1704,6 +1702,7 @@ const CartTab = () => {
 
   return (
     <>
+      {/* Message toast */}
       {msg && (
         <div
           className={`fixed top-4 right-4 z-50 px-4 py-2 rounded shadow-lg text-white font-semibold ${
@@ -1714,22 +1713,19 @@ const CartTab = () => {
         </div>
       )}
 
-      {/* 🟢 Cart UI ONLY if popup is NOT shown */}
+      {/* Cart Sidebar - HIDDEN when popup open */}
       {!showPopup && (
         <div className="fixed top-0 right-0 bg-white shadow-2xl w-96 h-full flex flex-col z-40">
-          {/* ─────────── Header ─────────── */}
           <div className="bg-[#E3E6F6] shadow-sm">
             <h2 className="p-5 text-[#28245F] font-black text-2xl text-center h-16">SHOPPING CART</h2>
           </div>
 
-          {/* ─────────── Items list ─────────── */}
           <div className="p-5 flex-grow overflow-y-auto" style={{ maxHeight: 'calc(100vh - 300px)' }}>
             {items.map((item) => (
               <CartItem key={item.productId} data={item} />
             ))}
           </div>
 
-          {/* ─────────── Footer ─────────── */}
           <div className="bg-[#E3E6F6] shadow-lg absolute bottom-0 left-0 right-0">
             <div className="p-3 text-[#4E4E4E] font-bold">
               <h3>Total Amount: Rs {totalAmount.toFixed(2)}</h3>
@@ -1750,10 +1746,10 @@ const CartTab = () => {
         </div>
       )}
 
-      {/* 🟠 Confirmation popup */}
+      {/* FULLSCREEN Popup */}
       {showPopup && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white w-11/12 max-w-lg p-6 rounded-xl shadow-lg relative">
+        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
+          <div className="bg-white w-11/12 max-w-lg p-6 rounded-xl shadow-lg relative max-h-[90vh] overflow-y-auto">
             <h2 className="text-3xl font-extrabold text-center mb-2 text-[#24256D]">
               Room {roomNumber}
             </h2>
@@ -1852,7 +1848,7 @@ const CartTab = () => {
                 confirmed ? 'bg-[#24256D]' : 'bg-gray-400 cursor-not-allowed'
               }`}
               disabled={!confirmed}
-              onClick={() => confirmed && handlePlaceOrder()}
+              onClick={handlePlaceOrder}
             >
               Add this order to Room {roomNumber}
             </button>
