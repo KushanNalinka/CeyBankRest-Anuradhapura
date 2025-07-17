@@ -679,7 +679,7 @@
 
 import React, { useState } from 'react';
 import { useCart } from '../../context/CartContext';
-import { products } from '../../Meals';
+import { products } from '../../Beverages';
 import CartItem from './CartItem';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
