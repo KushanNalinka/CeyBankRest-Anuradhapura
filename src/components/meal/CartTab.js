@@ -1613,7 +1613,7 @@
 
 // export default CartTab;
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useCart } from '../../context/CartContext';
 import { products } from '../../Meals';
 import CartItem from './CartItem';
@@ -1633,7 +1633,6 @@ const CartTab = () => {
   const [msgType, setMsgType] = useState('success');
 
   const { meal } = useParams();
-
   const today = new Date();
   const formattedDate = today.toISOString().split('T')[0];
   const formattedTime = today.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -1700,6 +1699,15 @@ const CartTab = () => {
   const handleQuantityChange = (pid, q) => changeQuantity(pid, q);
   const handleEnterKey = (e) => e.key === 'Enter' && fetchReservation();
 
+  // 🔒 Lock background scroll when popup is open
+  useEffect(() => {
+    if (showPopup) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+  }, [showPopup]);
+
   return (
     <>
       {/* Floating message */}
@@ -1713,7 +1721,7 @@ const CartTab = () => {
         </div>
       )}
 
-      {/* Right-side Cart Panel */}
+      {/* Cart Panel (right-side) — hidden when popup open */}
       {!showPopup && (
         <div className="fixed top-0 right-0 bg-white shadow-2xl w-96 h-full flex flex-col z-40">
           <div className="bg-[#E3E6F6] shadow-sm">
@@ -1746,10 +1754,10 @@ const CartTab = () => {
         </div>
       )}
 
-      {/* Fullscreen Confirmation Popup */}
+      {/* Fullscreen Popup Modal */}
       {showPopup && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-[9998] flex items-center justify-center">
-          <div className="bg-white w-11/12 max-w-lg p-6 rounded-xl shadow-lg relative z-[9999]">
+        <div className="fixed inset-0 z-[9998] bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center">
+          <div className="bg-white w-11/12 max-w-lg p-6 rounded-xl shadow-xl relative z-[9999]">
             <h2 className="text-3xl font-extrabold text-center mb-2 text-[#24256D]">
               Room {roomNumber}
             </h2>
