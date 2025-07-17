@@ -254,7 +254,7 @@ const GoodRequestTab = () => {
       }),
     };
 
-    console.log('POST to http://localhost:8080/api/v1/good-requisitions/add', payload);
+    //console.log('POST to http://localhost:8080/api/v1/good-requisitions/add', payload);
 
     try {
       const response = await fetch(
