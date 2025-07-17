@@ -1629,7 +1629,6 @@ const CartTab = () => {
   const [reservation, setReservation] = useState(null);
   const [showPopup, setShowPopup] = useState(false);
   const [confirmed, setConfirmed] = useState(false);
-
   const [msg, setMsg] = useState('');
   const [msgType, setMsgType] = useState('success');
 
@@ -1701,104 +1700,12 @@ const CartTab = () => {
   const handleQuantityChange = (pid, q) => changeQuantity(pid, q);
   const handleEnterKey = (e) => e.key === 'Enter' && fetchReservation();
 
-  // ✅ If popup is open, render ONLY the popup — nothing else
-  if (showPopup) {
-    return (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div className="bg-white w-11/12 max-w-lg p-6 rounded-xl shadow-lg relative">
-          <h2 className="text-3xl font-extrabold text-center mb-2 text-[#24256D]">
-            Room {roomNumber}
-          </h2>
-
-          <button
-            onClick={() => setShowPopup(false)}
-            className="absolute top-4 right-4 text-2xl text-gray-500"
-            aria-label="Close"
-          >
-            &times;
-          </button>
-
-          <h3 className="text-xl font-bold text-[#28245F] mb-4 mt-2">Confirm Order</h3>
-
-          {reservations.length > 0 && (
-            <div className="mb-4">
-              <label className="block text-sm font-semibold mb-1">Reservation</label>
-              <select
-                className="w-full border rounded p-2"
-                value={reservation?.reservationId ?? ''}
-                onChange={(e) => {
-                  const id = parseInt(e.target.value, 10);
-                  setReservation(reservations.find((r) => r.reservationId === id) || null);
-                }}
-              >
-                {reservations.map((r) => (
-                  <option key={r.reservationId} value={r.reservationId}>
-                    {r.name} – {r.nicPassportPf}
-                  </option>
-                ))}
-              </select>
-            </div>
-          )}
-
-          {reservation && (
-            <div className="mb-4 text-sm">
-              <p><strong>Meal Type:</strong> {meal?.toUpperCase()}</p>
-              <p><strong>Date:</strong> {formattedDate}</p>
-              <p><strong>Name:</strong> {reservation.name}</p>
-              <p><strong>NIC:</strong> {reservation.nicPassportPf}</p>
-            </div>
-          )}
-
-          <div className="mb-4">
-            <h4 className="font-semibold mb-2">Order Items</h4>
-            {items.map((item) => {
-              const product = products.find((p) => p.id === item.productId);
-              return (
-                <div key={item.productId} className="flex justify-between items-center mb-2">
-                  <span>{product?.name}</span>
-                  <input
-                    type="number"
-                    min={1}
-                    value={item.quantity}
-                    onChange={(e) =>
-                      handleQuantityChange(item.productId, parseInt(e.target.value, 10))
-                    }
-                    className="w-16 p-1 border rounded text-center"
-                  />
-                </div>
-              );
-            })}
-          </div>
-
-          <div className="flex items-center space-x-2 mb-4">
-            <input
-              type="checkbox"
-              checked={confirmed}
-              onChange={() => setConfirmed(!confirmed)}
-            />
-            <span className="text-sm font-semibold">Confirm all details</span>
-          </div>
-
-          <button
-            className={`w-full py-2 rounded-md shadow-md text-white font-bold ${
-              confirmed ? 'bg-[#24256D]' : 'bg-gray-400 cursor-not-allowed'
-            }`}
-            disabled={!confirmed}
-            onClick={() => confirmed && handlePlaceOrder()}
-          >
-            Add this order to Room {roomNumber}
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  // ✅ Default cart layout when popup is not open
   return (
     <>
+      {/* Floating message */}
       {msg && (
         <div
-          className={`fixed top-4 right-4 z-50 px-4 py-2 rounded shadow-lg text-white font-semibold ${
+          className={`fixed top-4 right-4 z-[9999] px-4 py-2 rounded shadow-lg text-white font-semibold ${
             msgType === 'error' ? 'bg-red-600' : 'bg-green-600'
           }`}
         >
@@ -1806,35 +1713,147 @@ const CartTab = () => {
         </div>
       )}
 
-      <div className="fixed top-0 right-0 bg-white shadow-2xl w-96 h-full flex flex-col z-40">
-        <div className="bg-[#E3E6F6] shadow-sm">
-          <h2 className="p-5 text-[#28245F] font-black text-2xl text-center h-16">SHOPPING CART</h2>
-        </div>
-
-        <div className="p-5 flex-grow overflow-y-auto" style={{ maxHeight: 'calc(100vh - 300px)' }}>
-          {items.map((item) => (
-            <CartItem key={item.productId} data={item} />
-          ))}
-        </div>
-
-        <div className="bg-[#E3E6F6] shadow-lg absolute bottom-0 left-0 right-0">
-          <div className="p-3 text-[#4E4E4E] font-bold">
-            <h3>Total Amount: Rs {totalAmount.toFixed(2)}</h3>
-            <p className="text-sm">Date: {formattedDate} | Time: {formattedTime}</p>
-            <p className="text-sm">Meal Type: {meal?.toUpperCase()}</p>
+      {/* Right-side Cart Panel */}
+      {!showPopup && (
+        <div className="fixed top-0 right-0 bg-white shadow-2xl w-96 h-full flex flex-col z-40">
+          <div className="bg-[#E3E6F6] shadow-sm">
+            <h2 className="p-5 text-[#28245F] font-black text-2xl text-center h-16">SHOPPING CART</h2>
           </div>
-          <div className="p-3 font-semibold">
-            <input
-              type="text"
-              placeholder="Enter Room Number"
-              value={roomNumber}
-              onChange={(e) => setRoomNumber(e.target.value)}
-              onKeyDown={handleEnterKey}
-              className="w-full p-2 mb-2 rounded-md"
-            />
+
+          <div className="p-5 flex-grow overflow-y-auto" style={{ maxHeight: 'calc(100vh - 300px)' }}>
+            {items.map((item) => (
+              <CartItem key={item.productId} data={item} />
+            ))}
+          </div>
+
+          <div className="bg-[#E3E6F6] shadow-lg absolute bottom-0 left-0 right-0">
+            <div className="p-3 text-[#4E4E4E] font-bold">
+              <h3>Total Amount: Rs {totalAmount.toFixed(2)}</h3>
+              <p className="text-sm">Date: {formattedDate} | Time: {formattedTime}</p>
+              <p className="text-sm">Meal Type: {meal?.toUpperCase()}</p>
+            </div>
+            <div className="p-3 font-semibold">
+              <input
+                type="text"
+                placeholder="Enter Room Number"
+                value={roomNumber}
+                onChange={(e) => setRoomNumber(e.target.value)}
+                onKeyDown={handleEnterKey}
+                className="w-full p-2 mb-2 rounded-md"
+              />
+            </div>
           </div>
         </div>
-      </div>
+      )}
+
+      {/* Fullscreen Confirmation Popup */}
+      {showPopup && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-[9998] flex items-center justify-center">
+          <div className="bg-white w-11/12 max-w-lg p-6 rounded-xl shadow-lg relative z-[9999]">
+            <h2 className="text-3xl font-extrabold text-center mb-2 text-[#24256D]">
+              Room {roomNumber}
+            </h2>
+            <button
+              onClick={() => setShowPopup(false)}
+              className="absolute top-4 right-4 text-2xl text-gray-500"
+              aria-label="Close"
+            >
+              &times;
+            </button>
+
+            <h3 className="text-xl font-bold text-[#28245F] mb-4 mt-2">Confirm Order</h3>
+
+            {reservations.length > 0 && (
+              <div className="mb-4">
+                <div className="mb-3">
+                  <label className="block text-sm font-semibold mb-1">Name</label>
+                  <select
+                    className="w-full border rounded p-2"
+                    value={reservation?.reservationId ?? ''}
+                    onChange={(e) => {
+                      const id = parseInt(e.target.value, 10);
+                      setReservation(reservations.find((r) => r.reservationId === id) || null);
+                    }}
+                  >
+                    {reservations.map((r) => (
+                      <option key={r.reservationId} value={r.reservationId}>
+                        {r.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold mb-1">NIC / Passport</label>
+                  <select
+                    className="w-full border rounded p-2"
+                    value={reservation?.reservationId ?? ''}
+                    onChange={(e) => {
+                      const id = parseInt(e.target.value, 10);
+                      setReservation(reservations.find((r) => r.reservationId === id) || null);
+                    }}
+                  >
+                    {reservations.map((r) => (
+                      <option key={r.reservationId} value={r.reservationId}>
+                        {r.nicPassportPf}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            )}
+
+            {reservation && (
+              <div className="mb-4 text-sm">
+                <p><strong>Meal Type:</strong> {meal?.toUpperCase()}</p>
+                <p><strong>Date:</strong> {formattedDate}</p>
+                <p><strong>Reservation ID:</strong> {reservation.reservationId}</p>
+                <p><strong>Name:</strong> {reservation.name}</p>
+                <p><strong>NIC:</strong> {reservation.nicPassportPf}</p>
+              </div>
+            )}
+
+            <div className="mb-4">
+              <h4 className="font-semibold mb-2">Order Items</h4>
+              {items.map((item) => {
+                const product = products.find((p) => p.id === item.productId);
+                return (
+                  <div key={item.productId} className="flex justify-between items-center mb-2">
+                    <span>{product?.name}</span>
+                    <input
+                      type="number"
+                      min={1}
+                      value={item.quantity}
+                      onChange={(e) =>
+                        handleQuantityChange(item.productId, parseInt(e.target.value, 10))
+                      }
+                      className="w-16 p-1 border rounded text-center"
+                    />
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className="flex items-center space-x-2 mb-4">
+              <input
+                type="checkbox"
+                checked={confirmed}
+                onChange={() => setConfirmed(!confirmed)}
+              />
+              <span className="text-sm font-semibold">Confirm all details</span>
+            </div>
+
+            <button
+              className={`w-full py-2 rounded-md shadow-md text-white font-bold ${
+                confirmed ? 'bg-[#24256D]' : 'bg-gray-400 cursor-not-allowed'
+              }`}
+              disabled={!confirmed}
+              onClick={() => confirmed && handlePlaceOrder()}
+            >
+              Add this order to Room {roomNumber}
+            </button>
+          </div>
+        </div>
+      )}
     </>
   );
 };
